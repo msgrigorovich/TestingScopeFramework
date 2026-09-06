@@ -1,8 +1,30 @@
-# Testing Scope Framework
+<h1 align="center" style="color:FireBrick">
+    Testing Scope Framework
+</h1>
 
-Методология для определения объективного, воспроизводимого уровня тестирования задачи (feature/bugfix) на основе двух независимых осей — **Impact Analysis** и **Complexity Dev** — вместо решения "на глаз", зависящего от опыта конкретного QA-инженера.
+<p align="center">
+   <b>Hi everyone!</b>
+</p>
 
-Документ не заменяет аналитическое мышление QA, а задаёт **минимальный гарантированный уровень проверки**, предсказуемый независимо от того, кто именно тестирует задачу.
+<b>Table of contents:</b>
+
+* [Can we expect two independent QA engineers to complete the same task with the same result?](#can-we-expect-two-independent-qa-engineers-to-complete-the-same-task-with-the-same-result)
+* [A universal AAA checklist does not exist.](#a-universal-aaa-checklist-does-not-exist)
+* [Why This Exists](#why-this-exists)
+* [Scope](#scope)
+* [Base Workflow](#base-workflow)
+* [The Testing Matrix](#the-testing-matrix)
+* [Framework](#framework)
+* [Testing Levels](#testing-levels)
+* [The Final Checklist](#the-final-checklist)
+* [Best Practices](#best-practices)
+* [Common Pitfalls](#common-pitfalls)
+
+___
+
+A methodology for determining an objective, reproducible testing level for a task (feature/bugfix) based on two independent axes — **Impact Analysis** and **Complexity Dev** — instead of a gut call that depends on which QA engineer happens to pick it up.
+
+This document doesn't replace a QA engineer's analytical thinking — it sets a **minimum guaranteed level of verification**, predictable regardless of who ends up testing the task.
 
 ## Can we expect two independent QA engineers to complete the same task with the same result?
 
@@ -51,60 +73,46 @@ Maximum coverage is not automatically maximum quality. When every layer is treat
 
 The framework helps explain what does not need to be tested — and why.
 
-## Содержание
+## Why This Exists
 
-- [Can we expect two independent QA engineers to complete the same task with the same result?](#can-we-expect-two-independent-qa-engineers-to-complete-the-same-task-with-the-same-result)
-- [A universal AAA checklist does not exist.](#a-universal-aaa-checklist-does-not-exist)
-- [Зачем это нужно](#зачем-это-нужно)
-- [Scope](#scope)
-- [Base Workflow](#base-workflow)
-- [Матрица тестирования](#матрица-тестирования)
-- [Калькулятор](#калькулятор)
-- [Уровни тестирования](#уровни-тестирования)
-- [Финальный чек-лист](#финальный-чек-лист)
-- [Best Practices](#best-practices)
-- [Частые проблемы](#частые-проблемы)
+Without a formal criterion, testing scope gets decided subjectively: one engineer regresses everything "just in case," another stops at the happy path. Both outcomes are a problem — over-testing burns the team's time, under-testing lets risk slip through.
 
-## Зачем это нужно
+The framework solves this by splitting testing scope into two independent concepts that already exist in most trackers:
 
-Без формального критерия объём тестирования задачи определяется субъективно: один инженер регрессит всё подряд "на всякий случай", другой ограничивается позитивным сценарием. Оба исхода — проблема: избыточное тестирование тратит время команды, недостаточное — пропускает риски.
+- **Impact Analysis** — says **how much** to test (regression breadth)
+- **Complexity Dev** — says **how deep** to test (logic-validation depth)
 
-Framework решает это, раскладывая объём тестирования на два независимых, уже существующих в большинстве трекеров понятия:
-
-- **Impact Analysis** — говорит, **сколько** тестировать (ширина регресса)
-- **Complexity Dev** — говорит, **насколько глубоко** тестировать (глубина валидации логики)
-
-Результирующее значение — **Impact Analysis QA** — конкретный уровень тестирования (XS–XL) с чётким перечнем обязательных проверок.
+The resulting value — **Impact Analysis QA** — is a concrete testing level (XS–XL) with a clear list of mandatory checks.
 
 ## Scope
 
-Framework распространяется на ветки, соответствующие Base Workflow:
+The framework applies to branches that fit the Base Workflow:
 
-- реализация нового функционала
-- исправление старых или новых проблем (багфиксы)
-- рефакторинги и технические изменения, не влияющие на пользовательский опыт
-- экспериментальные изменения формата R&D и проверка гипотез
+- new functionality
+- fixes for old or new problems (bugfixes)
+- refactors and technical changes that don't affect user experience
+- experimental R&D-style changes and hypothesis testing
 
 > [!WARNING]
-> Framework **не распространяется** на hotfix-процесс — ветки, отвечающие критериям срочности решения проблемы или иной экстренной активности. Для hotfix-веток должен существовать отдельный, более быстрый процесс (Hot Workflow), не описанный в этом документе.
+> The framework **does not apply** to the hotfix process — branches that meet the criteria of urgency or any other emergency activity. Hotfix branches need a separate, faster process (a Hot Workflow), which this document does not cover.
 
 ## Base Workflow
 
-Порядок действий при работе с задачей, попадающей в scope:
+The sequence of actions when working a task that falls within scope:
 
-1. Ознакомление с задачей и всей прилагаемой документацией
-2. Ознакомление с Impact Analysis задачи
-3. Ознакомление с Complexity Dev задачи
-4. Проверка на соответствие выставленного Impact'а и Complexity Dev — QA не только исполняет эти значения, но и валидирует их корректность
-5. Стадия тестирования в соответствии с финализированным Impact'ом и Complexity Dev
-6. Финализация QA-процесса при необходимости (продвижение по Bug Life Cycle)
+1. Read the task and all attached documentation
+2. Review the task's Impact Analysis
+3. Review the task's Complexity Dev
+4. Check that the assigned Impact and Complexity Dev actually hold up — QA doesn't just execute these values, it validates them
+5. Test according to the finalized Impact and Complexity Dev
+6. Finalize the QA process where needed (advancing the Bug Life Cycle)
 
 > [!IMPORTANT]
-> Шаг 4 — критичный: от корректности выставленных значений зависит, насколько адекватным окажется весь последующий объём работы. Валидация Impact/Complexity требует чётких критериев их выставления.
+> Step 4 is the critical one: the correctness of the assigned values determines how sane the entire downstream scope of work will be. Validating Impact/Complexity requires clear criteria for assigning them in the first place.
 
-## Матрица тестирования
+## The Testing Matrix
 
-Результирующий уровень тестирования (**Impact Analysis QA**) рассчитывается по формуле:
+The resulting testing level (**Impact Analysis QA**) is calculated with the following formula:
 
 ```
 full_weight = impact_weight + complexity_weight = 1
@@ -112,255 +120,275 @@ full_weight = impact_weight + complexity_weight = 1
 impact_analysis_qa = impact_weight * impact_level_value + complexity_weight * complexity_level_value
 ```
 
-Базовые значения:
+Base values:
 
-| Параметр | Значение |
+| Parameter | Value |
 |---|---|
 | `impact_weight` | 0.6 |
 | `complexity_weight` | 0.4 |
 | `level_value`: XS / S / M / L / XL | 1 / 2 / 3 / 4 / 5 |
 
-Вес Impact Analysis выше веса Complexity Dev, т.к. регрессионные риски (ширина) приоритетнее глубины валидации новой логики.
+Impact Analysis carries more weight than Complexity Dev, because regression risk (breadth) takes priority over the depth of validating new logic.
 
-Результат округляется **в большую сторону** (safety margin) и ограничивается диапазоном 1–5.
+The result is rounded **up** (a safety margin) and clamped to the 1–5 range.
 
-**Пример:** Impact = XS (1), Complexity = S (2):
+**Example:** Impact = XS (1), Complexity = S (2):
 
 ```
 impact_analysis_qa = 0.6 * 1 + 0.4 * 2 = 1.4 → CEIL → 2 = S
 ```
 
-Полная матрица результатов при базовых весах:
+The full result matrix at the base weights:
 
 ![Testing Matrix: Impact Analysis × Complexity Dev](assets/testing-matrix.svg)
 
-| Complexity \ Impact | XS | S | M | L | XL |
-|---|---|---|---|---|---|
-| **XS** | XS | S | M | M | L |
-| **S** | S | S | M | L | L |
-| **M** | S | M | M | L | XL |
-| **L** | M | M | L | L | XL |
-| **XL** | M | L | L | XL | XL |
-
 > [!CAUTION]
-> Если в задаче не выставлен Complexity Dev, допускается упрощение `Impact Analysis QA = Impact Analysis`, но это не рекомендуется — увеличивает погрешность определения уровня. Любые невыставленные значения, важные для дальнейшей работы QA, должны быть донесены до автора задачи.
+> If a task has no Complexity Dev assigned, the simplification `Impact Analysis QA = Impact Analysis` is allowed, but it's not recommended — it increases the margin of error in determining the level. Any missing values that matter for QA's downstream work should be flagged to the task's author.
 
-## Калькулятор
+## Framework
 
-[![Testing Scope Calculator preview](assets/calculator-preview.png)](calculator.html)
+[![Testing Scope Framework preview](assets/framework-preview.png)](framework.html)
 
-[`calculator.html`](calculator.html) — самодостаточный HTML-инструмент (без сборки и зависимостей, открывается прямо в браузере), реализующий формулу выше:
+[`framework.html`](framework.html) — a self-contained HTML tool (no build step, no dependencies, opens straight in a browser) that implements the formula above:
 
-- выбор Impact Analysis и Complexity Dev (XS–XL)
-- настраиваемые веса с автоматической нормализацией к сумме 1
-- визуализация результирующего уровня и объяснение расчёта (`Score = ... → CEIL → уровень`)
-- чек-лист выбранного уровня с наследованием проверок предыдущих уровней ("всё из XS +", "всё из S +" и т.д.)
-- экспорт итогового чек-листа в разметку, пригодную для вставки в комментарий тикета (Jira wiki markup)
-
-> [!NOTE]
-> Калькулятор — демонстрационный концепт: чек-листы по уровням покрывают общий случай, а не исчерпывающий список проверок, а индикаторы прогресса в карточках уровней пока не интерактивны. Наполнение более детальными сценариями по уровням — открытая задача.
-
-## Уровни тестирования
-
-Различия между уровнями определяются тремя понятиями:
-
-1. **Глубина проверки** — определяется Complexity Dev (например: проверить не только конечный результат, но и корректность промежуточного расчёта/формулы, лежащей в основе логики)
-2. **Ширина проверки** — определяется Impact Analysis (например: проверить не только изменённый модуль, но и его влияние на смежные модули — регресс)
-3. **Недоверие к логике** — субъективный, но всегда присутствующий фактор (например: "эта зависимость звучит нелогично и рискованно")
+- pick Impact Analysis and Complexity Dev (XS–XL)
+- adjustable weights that auto-normalize to sum to 1
+- a visualization of the resulting level and a breakdown of the calculation (`Score = ... → CEIL → level`)
+- a checklist for the selected level that inherits checks from lower levels ("all of XS +," "all of S +," etc.)
+- export of the final checklist as markup ready to paste into a ticket comment (Jira wiki markup)
 
 > [!NOTE]
-> Количество конкретных кейсов — лишь косвенное следствие анализа этих трёх понятий, поэтому единый стандарт проверок, покрывающий 100% задач, невозможен. Ниже описано типовое поведение для большинства случаев.
+> Framework (`framework.html`) is a proof-of-concept demo: the per-level checklists cover the general case, not an exhaustive list of checks, and the progress indicators on the level cards aren't interactive yet. Filling in more detailed scenarios per level is still an open task.
 
-Сквозной пример — механика **Reaction Experiment** из тестового Unreal Engine проекта [qalab](https://github.com/msgrigorovich/qalab): `FReactionModel::Evaluate` по входным параметрам `AmountA` / `AmountB` / `Temperature` рассчитывает `Yield` (выход реакции) и `ReactionTime`, а `UExperimentComponent` оборачивает эту чистую функцию в состояние `Idle → Ready → Running → Completed/Failed/Cancelled`.
+## Testing Levels
+
+The differences between levels come down to three concepts:
+
+1. **Check depth** — set by Complexity Dev (for example: verify not just the final result, but the correctness of the intermediate calculation/formula the logic relies on)
+2. **Check breadth** — set by Impact Analysis (for example: verify not just the changed module, but its effect on adjacent modules — regression)
+3. **Distrust of the logic** — a subjective factor, but always present (for example: "this dependency sounds illogical and risky")
+
+> [!NOTE]
+> The number of concrete cases is only an indirect consequence of analyzing these three concepts, so a single testing standard covering 100% of tasks is impossible. What follows describes typical behavior for the majority of cases.
+
+The running example is the **Reaction Experiment** mechanic from [qalab](https://github.com/msgrigorovich/qalab), a test Unreal Engine project: `FReactionModel::Evaluate` takes `AmountA` / `AmountB` / `Temperature` as inputs and computes `Yield` (reaction output) and `ReactionTime`, while `UExperimentComponent` wraps that pure function in an `Idle → Ready → Running → Completed/Failed/Cancelled` state machine.
 
 ### Impact Analysis QA = XS — Minimal Validation
 
-**Цель:** проверка локального изменения. **Регрессионный охват:** точка изменения.
+**Goal:** verifying a local change. **Regression scope:** the change point.
 
-| Параметр | Описание |
+| Parameter | Description |
 |---|---|
-| Смысл | Проверка корректности конкретного изменения без анализа системы |
-| Что это значит | Проверяем, что изменение работает в точке применения, но не исследуем поведение за её пределами |
-| Глубина | Поверхностная (без анализа логики) |
-| Ширина (регресс) | Точка изменения — конкретный сценарий, ради которого сделана задача |
-| Граница уровня | Не проверяются альтернативные пути, состояния, зависимости |
+| Meaning | Verifying the correctness of a specific change without analyzing the system |
+| What it means | We check that the change works at its point of application, but don't explore behavior beyond it |
+| Depth | Surface-level (no logic analysis) |
+| Breadth (regression) | The change point only — the specific scenario the task was made for |
+| Level boundary | Alternative paths, states, and dependencies are not checked |
 
-**Пример задачи:** добавить в `FExperimentParameters` boolean-флаг `bSafetyLockEnabled`, при котором `UExperimentComponent::StartExperiment()` сразу возвращает `false`, не запуская реакцию.
+**Example task:** add a boolean flag `bSafetyLockEnabled` to `FExperimentParameters` that makes `UExperimentComponent::StartExperiment()` return `false` immediately, without starting the reaction.
 
-- Флаг = true → `StartExperiment()` → возвращает `false`, состояние не переходит в `Running`
-- Флаг = false → `StartExperiment()` → работает как раньше, `FReactionModel::Evaluate` вызывается штатно
-- Регрессионных проверок нет — только реализованный флаг
+- Flag = true → `StartExperiment()` → returns `false`, state doesn't transition to `Running`
+- Flag = false → `StartExperiment()` → works as before, `FReactionModel::Evaluate` is called normally
+- No regression checks — only the implemented flag
 
 ### Impact Analysis QA = S — Basic Validation
 
-**Цель:** базовая валидация логики. **Регрессионный охват:** точка изменения + ближайшие сценарии.
+**Goal:** basic logic validation. **Regression scope:** the change point + nearby scenarios.
 
-| Параметр | Описание |
+| Parameter | Description |
 |---|---|
-| Смысл | Проверка базовой логики и очевидных отклонений |
-| Что это значит | Проверяем не только позитивный сценарий, но и простые отклонения поведения |
-| Глубина | Низкая (базовая логика) |
-| Ширина (регресс) | Точка изменения + ближайшее окружение — сценарии, напрямую использующие ту же логику |
-| Граница уровня | Не проверяются сложные состояния и переходы |
+| Meaning | Verifying basic logic and obvious deviations |
+| What it means | We check not just the happy path, but simple behavioral deviations too |
+| Depth | Low (basic logic) |
+| Breadth (regression) | The change point + its immediate surroundings — scenarios that directly use the same logic |
+| Level boundary | Complex states and transitions are not checked |
 
-**Пример задачи:** заменить статичный флаг на константный threshold `MaxSafeTemperature` — `FReactionModel::Validate` должен полностью отклонять реакцию (а не просто штрафовать `Yield`, как сейчас), если `Temperature` превышает этот порог.
+**Example task:** replace the static flag with a constant threshold, `MaxSafeTemperature` — `FReactionModel::Validate` should now reject the reaction outright (instead of just penalizing `Yield`, as it does now) once `Temperature` exceeds that threshold.
 
-- `Temperature` в пределах старого безопасного диапазона → поведение не изменилось
-- `Temperature` превышает `MaxSafeTemperature` → `Validate` возвращает `false`, состояние → `Failed`, `FailureReason` заполнен
-- `Temperature` == `MaxSafeTemperature` ровно → реакция всё ещё принимается (граница включительно)
-- Регрессионная проверка: задокументированные граничные кейсы `MinimumTemperatureBoundaryIsAccepted` / `MaximumTemperatureBoundaryIsAccepted` из существующего набора тестов не должны сломаться ниже нового порога
+- `Temperature` within the old safe range → behavior unchanged
+- `Temperature` exceeds `MaxSafeTemperature` → `Validate` returns `false`, state → `Failed`, `FailureReason` is set
+- `Temperature` == `MaxSafeTemperature` exactly → the reaction is still accepted (boundary is inclusive)
+- Regression check: the documented boundary cases `MinimumTemperatureBoundaryIsAccepted` / `MaximumTemperatureBoundaryIsAccepted` from the existing test suite must not break below the new threshold
 
 ### Impact Analysis QA = M — Deep Validation
 
-**Цель:** глубокая проверка механики. **Регрессионный охват:** вся механика.
+**Goal:** deep verification of the mechanic. **Regression scope:** the whole mechanic.
 
-| Параметр | Описание |
+| Parameter | Description |
 |---|---|
-| Смысл | Проверка механики как целостной логической системы |
-| Что это значит | Рассматриваем механику как набор состояний, переходов и зависимостей |
-| Глубина | Средняя–высокая |
-| Ширина (регресс) | Вся механика + все сценарии внутри неё |
-| Граница уровня | Не выходим за пределы механики |
+| Meaning | Verifying the mechanic as a complete logical system |
+| What it means | We treat the mechanic as a set of states, transitions, and dependencies |
+| Depth | Medium–high |
+| Breadth (regression) | The whole mechanic + every scenario inside it |
+| Level boundary | We don't go beyond the mechanic |
 
-**Пример задачи:** сделать `MaxSafeTemperature` зависимым не только от `Temperature`, но и от соотношения `AmountA`/`AmountB` — сильно рассогласованная пропорция реагентов должна снижать безопасный температурный порог (модель уже считает `RatioDeviation` для штрафа `Yield`, теперь она же влияет и на порог отказа).
+**Example task:** make `MaxSafeTemperature` depend not just on `Temperature`, but on the `AmountA`/`AmountB` ratio too — a heavily mismatched reagent ratio should lower the safe temperature threshold (the model already computes `RatioDeviation` for the `Yield` penalty; now it also drives the rejection threshold).
 
-- Проверка каждого входного параметра отдельно (`AmountA`/`AmountB`/`Temperature`: min/normal/max)
-- Проверка всех значимых комбинаций параметров (сбалансированная пропорция + высокая температура, рассогласованная пропорция + умеренная температура и т.д.)
-- Проверка переходов между состояниями (`Ready → Failed` ровно на новой динамической границе, `Ready → Completed` чуть ниже неё)
-- Пограничные кейсы для новой зависимости
-- Регрессионная проверка: `OptimalRatioProducesExpectedYield` (базовый позитивный тест проекта, `Yield == 100%`) не должен измениться
+- Check each input parameter individually (`AmountA`/`AmountB`/`Temperature`: min/normal/max)
+- Check every meaningful combination of parameters (balanced ratio + high temperature, mismatched ratio + moderate temperature, etc.)
+- Check state transitions (`Ready → Failed` exactly at the new dynamic boundary, `Ready → Completed` just below it)
+- Boundary cases for the new dependency
+- Regression check: `OptimalRatioProducesExpectedYield` (the project's base happy-path test, `Yield == 100%`) must not change
 
 ### Impact Analysis QA = L — System Validation
 
-**Цель:** системная проверка. **Регрессионный охват:** механика + смежные системы.
+**Goal:** system-level verification. **Regression scope:** the mechanic + adjacent systems.
 
-| Параметр | Описание |
+| Parameter | Description |
 |---|---|
-| Смысл | Проверка взаимодействия механики с другими системами |
-| Что это значит | Проверяем не только механику, но и как она влияет на другие системы и зависит от них |
-| Глубина | Высокая |
-| Ширина (регресс) | Механика + связанные системы и сценарии взаимодействия |
-| Граница уровня | Не покрывает весь продукт целиком |
+| Meaning | Verifying the mechanic's interaction with other systems |
+| What it means | We check not just the mechanic, but how it affects and depends on other systems |
+| Depth | High |
+| Breadth (regression) | The mechanic + related systems and interaction scenarios |
+| Level boundary | Doesn't cover the whole product |
 
-**Пример задачи:** новый отказ по температурному порогу должен доходить до `FRegressionAnalyzer` — прогон `AReactionTestStand` (sweep конфигураций), который стал чаще упираться в порог, обязан показать это как рост `FailureRate` в `CompareToBaseline()`, а не потеряться в усреднённых `Yield`/`ReactionTime`.
+**Example task:** the new temperature-threshold rejection needs to reach `FRegressionAnalyzer` — an `AReactionTestStand` sweep that now hits the threshold more often must show up as a rising `FailureRate` in `CompareToBaseline()`, not get lost in averaged `Yield`/`ReactionTime` numbers.
 
-- Полная проверка логики `FReactionModel`/`UExperimentComponent`, описанной на уровнях выше
-- Полный регресс пайплайна Test Stand → Regression: `ComputeBaselineAggregatesRunRecordsPerMetric`, `IntentionalReactionTimeRegressionTriggersWarning`, `TooFewRunsSkipsComparison` — теперь при включённом новом пороге
+- Full verification of the `FReactionModel`/`UExperimentComponent` logic described at the levels above
+- Full regression of the Test Stand → Regression pipeline: `ComputeBaselineAggregatesRunRecordsPerMetric`, `IntentionalReactionTimeRegressionTriggersWarning`, `TooFewRunsSkipsComparison` — now with the new threshold engaged
 
 ### Impact Analysis QA = XL — Critical Validation
 
-**Цель:** критическая проверка. **Регрессионный охват:** кросс-системный / кросс-командный регресс.
+**Goal:** critical verification. **Regression scope:** cross-system / cross-team regression.
 
-| Параметр | Описание |
+| Parameter | Description |
 |---|---|
-| Смысл | Проверка с максимальным уровнем недоверия к системе |
-| Что это значит | Предполагаем, что система может ломаться в неожиданных местах |
-| Глубина | Максимальная |
-| Ширина (регресс) | Кросс-системный + кросс-доменный регресс |
-| Граница уровня | Практически отсутствует (преобладание проверок на негативные сценарии) |
+| Meaning | Verifying with the maximum level of distrust toward the system |
+| What it means | We assume the system can break in unexpected places |
+| Depth | Maximum |
+| Breadth (regression) | Cross-system + cross-domain regression |
+| Level boundary | Practically none (checks skew heavily toward negative scenarios) |
 
-**Пример задачи:** сделать отказ по новому порогу release-blocking сигналом — экспортировать его через `UQATelemetryLibrary` (CSV/JSON) и завязать на него `FRegressionAnalyzer`, так, чтобы случайный сдвиг порога был пойман раньше, чем сломает схему телеметрии или тесты-якоря, на которые опирается весь остальной набор (`OptimalRatioProducesExpectedYield`, `RunsPerConfigRepeatsSameConfigDeterministically`).
+**Example task:** turn a rejection under the new threshold into a release-blocking signal — export it through `UQATelemetryLibrary` (CSV/JSON) and wire `FRegressionAnalyzer` to it, so an accidental shift in the threshold gets caught before it breaks the telemetry schema or the anchor tests the rest of the suite relies on (`OptimalRatioProducesExpectedYield`, `RunsPerConfigRepeatsSameConfigDeterministically`).
 
-- Полная проверка всей системы `FReactionModel`/`UExperimentComponent` и всех смежных модулей (уровень L: Test Stand, Regression, Telemetry)
-- Упор на нетипичные, экстремальные и редко встречающиеся сценарии (например, порог схлопывается до значения ниже документированного минимума температуры — механика начинает отклонять любую конфигурацию)
-- Проверка `InteractionComponent`/станций, которые конфигурируют и запускают эксперимент — не сломались ли сценарии игрока при изменении допустимого диапазона параметров
-- Производительность: `Validate()` теперь делает больше работы на каждый вызов — sweep из множества конфигураций и прогонов (`AReactionTestStand`) не должен ощутимо замедлиться
-- Обязательное привлечение кросс-командного тестирования со стороны владельцев смежных систем
+- Full verification of the entire `FReactionModel`/`UExperimentComponent` system and all adjacent modules (level L: Test Stand, Regression, Telemetry)
+- Heavy focus on atypical, extreme, and rarely-seen scenarios (for example, the threshold collapses below the documented minimum temperature — the mechanic starts rejecting every configuration)
+- Check the `InteractionComponent`/stations that configure and trigger the experiment — did the player-facing scenarios break when the valid parameter range changed?
+- Performance: `Validate()` now does more work per call — a sweep across many configs and runs (`AReactionTestStand`) must not noticeably slow down
+- Mandatory cross-team testing involvement from the owners of adjacent systems
 
-## Финальный чек-лист
+## The Final Checklist
 
-Сводная таблица типов проверок и их обязательности по уровням (`+` обязательно, `-` не требуется):
+A summary table of check types and whether they're mandatory at each level (`+` mandatory, `-` not required):
 
-| Тип проверки | XS | S | M | L | XL |
+| Check type | XS | S | M | L | XL |
 |---|---|---|---|---|---|
-| Соответствие требованиям | + | + | + | + | + |
-| Проверка точки изменения | + | + | + | + | + |
-| Позитивные сценарии | + | + | + | + | + |
-| Негативные сценарии | - | + | + | + | + |
-| Граничные значения | - | + | + | + | + |
-| Проверка переходов состояний | - | - | + | + | + |
-| Проверка комбинаторики действий | - | - | + | + | + |
-| Проверка расчётов / формул | - | - | + | + | + |
-| Проверка данных (консистентность) | - | - | + | + | + |
-| Проверка механики (end-to-end) | - | - | + | + | + |
-| Проверка взаимодействия систем | - | - | - | + | + |
-| Регресс локальной механики | - | - | - | + | + |
-| Регресс смежных механик | - | - | - | + | + |
-| Регресс всех механик | - | - | - | - | + |
-| Нестандартные сценарии | - | - | - | - | + |
-| Экстремальные ситуации | - | - | - | - | + |
-| Производительность | - | - | - | - | + |
-| Кросс-командное взаимодействие | - | - | - | - | + |
+| Requirement compliance | + | + | + | + | + |
+| Change point verification | + | + | + | + | + |
+| Positive scenarios | + | + | + | + | + |
+| Negative scenarios | - | + | + | + | + |
+| Boundary values | - | + | + | + | + |
+| State transition checks | - | - | + | + | + |
+| Action combinatorics | - | - | + | + | + |
+| Calculation / formula checks | - | - | + | + | + |
+| Data consistency checks | - | - | + | + | + |
+| Mechanic checks (end-to-end) | - | - | + | + | + |
+| System interaction checks | - | - | - | + | + |
+| Local mechanic regression | - | - | - | + | + |
+| Adjacent mechanic regression | - | - | - | + | + |
+| Full regression across all mechanics | - | - | - | - | + |
+| Non-standard scenarios | - | - | - | - | + |
+| Extreme conditions | - | - | - | - | + |
+| Performance | - | - | - | - | + |
+| Cross-team involvement | - | - | - | - | + |
 
 ## Best Practices
 
-Практики ниже актуальны как для задач с новой функциональностью, так и для работы с воспроизведением багов.
+The practices below apply both to new-functionality tasks and to bug reproduction work.
 
-### Работа с отладкой на уровне логики
+### Working with logic-level debugging
 
-Для задач с уровнем тестирования ≥ M взаимодействие с исходной логикой (а не только с UI/конечным поведением) становится необходимым:
+For tasks at testing level ≥ M, engaging with the underlying logic (not just the UI/end behavior) becomes necessary:
 
-- отключение части логики от основной функции и проверка работы именно точки изменения в изоляции
-- логирование вызова функции для проверки соответствия триггерам, описанным в требованиях
-- установка breakpoint на нужной функции для проверки самого факта и контекста вызова
-- прямая манипуляция внутренним состоянием для воссоздания комбинаций ситуаций, которые сложно/долго воссоздать через обычный пользовательский сценарий
+- disconnecting part of the logic from the main function and verifying the change point in isolation
+- logging the function call to verify it matches the triggers described in the requirements
+- setting a breakpoint on the relevant function to verify the call itself and its context
+- directly manipulating internal state to recreate combinations of situations that are hard or slow to reach through a normal user scenario
 
-Если объединяются несколько ранее независимых функций/модулей — необходимо тестировать не только новую объединённую логику, но и регресс по логике, которая раньше была раскидана по отдельным местам.
+When several previously independent functions/modules get merged, you need to test not just the new combined logic, but regression on the logic that used to be scattered across separate places.
 
-### Работа с логами
+### Working with logs
 
-Своевременность логирования — один из признаков ожидаемо работающей системы. Недостаточное логирование — повод вернуть задачу на доработку; чрезмерное логирование — потенциальная проблема для производительности.
+Timely logging is one sign of a system behaving as expected. Insufficient logging is a reason to send the task back for rework; excessive logging is a potential performance problem.
 
-Логи особенно полезны в кейсах, где вызовы происходят за короткий промежуток времени и разница между двумя похожими условиями не видна "невооружённым глазом" (например, гонка между двумя почти одновременными триггерами). В таких случаях единственный надёжный способ подтвердить, какое именно условие сработало — сверка с логами, а не наблюдение за конечным поведением.
+Logs are especially useful when calls happen within a short window and the difference between two similar conditions isn't visible to the naked eye (for example, a race between two nearly-simultaneous triggers). In cases like that, the only reliable way to confirm which condition actually fired is checking the logs — not watching the end behavior.
 
-### Работа с профилированием производительности
+### Working with performance profiling
 
 > [!NOTE]
-> Работа с трейсом производительности, как правило, — следствие недоверия к системе или субъективного ощущения деградации, но иногда должна выполняться по регламенту (например, если новая логика начинает выполняться на каждый кадр/такт вместо разового вызова).
+> Pulling a performance trace is usually a consequence of distrust toward the system or a subjective sense that things got slower, but sometimes it has to happen on schedule (for example, if new logic now runs every frame/tick instead of once).
 
-Практика: воссоздать ситуацию, вызывающую новую логику, снять трейс до и после изменения, сравнить затраты по времени на вызов затронутого пути.
+Practice: recreate the situation that triggers the new logic, capture a trace before and after the change, and compare the time cost of the affected path.
 
-### Работа со стендами
+### Working with test benches
 
 > [!TIP]
-> Работа со стендами (тестовыми окружениями с фиксированным набором ситуаций) и повторяемыми тестовыми сценариями — одна из ключевых объективных практик тестирования. Рекомендуется использовать стенды как обязательный критерий приёмки для задач, где результат сложно оценить "на глаз" (изменения в вероятностных/статистических механиках, ML-модели, ранжирование и т.д.).
+> Working with test benches (test environments with a fixed set of situations) and repeatable test scenarios is one of the key objective testing practices. Using a bench as a mandatory acceptance criterion is recommended for tasks where the result is hard to judge by eye (changes to probabilistic/statistical mechanics, ML models, ranking, etc.).
 
-Практика: создать отдельные ветки/окружения "до" и "после" изменения (не переиспользуя существующие рабочие ветки, чтобы не портить их диффы), прогнать одинаковый стенд ситуаций на обеих и сравнить агрегированную статистику.
+Practice: create separate "before" and "after" branches/environments (without reusing existing working branches, to avoid polluting their diffs), run the same bench of situations against both, and compare the aggregated statistics.
 
-### Работа с телеметрией
+### Working with telemetry
 
-Телеметрия — один из ключевых объективных критериев приёмки, наряду со стендами. Область применения широка: от проверки корректности события до оценки серьёзности и приоритета бага, который невозможно воспроизвести вручную.
+Telemetry is one of the key objective acceptance criteria, alongside test benches. Its range of use is broad — from verifying an event fires correctly to assessing the severity and priority of a bug that can't be reproduced manually.
 
-Практика: сформулировать логическое условие проблемы, перевести его в запрос к аналитическому хранилищу, получить частоту воспроизведения до и после фикса — это переводит оценку приоритета из догадки в измеримую величину.
+Practice: formulate the problem as a logical condition, translate it into a query against the analytics store, and get the reproduction rate before and after the fix — this turns priority assessment from a guess into a measurable number.
 
 > [!CAUTION]
-> При некорректно подобранных условиях запроса данные телеметрии будут "лгать", т.е. вредить больше, чем помогать — стоит привлекать команду аналитиков для валидации сложных запросов.
+> With badly chosen query conditions, telemetry data will "lie" — doing more harm than good — so it's worth bringing in the analytics team to validate complex queries.
 
-### Работа с diff'ом Pull Request
+### Working with a Pull Request diff
 
-Анализ diff'а — превентивная мера выявления рисков, не всегда очевидных из описания задачи:
+Analyzing the diff is a preventive way to surface risks that aren't always obvious from the task description:
 
-- ширина затронутого функционала → важность регрессионных проверок
-- глубина изменений → точечность реализованной логики
-- наличие новых файлов или изменений в специфичных путях (сетевой код, конфигурация сборки и т.д.) → какие дополнительные конфигурации/типы сборки нужно проверить отдельно, если CI не покрывает их по умолчанию
+- breadth of the affected functionality → how important regression checks are
+- depth of the changes → how localized the implemented logic is
+- new files or changes in specific paths (networking code, build configuration, etc.) → which extra configurations/build types need separate verification if CI doesn't cover them by default
 
 > [!TIP]
-> Полезная, но не заменяющая ручной анализ практика — передавать diff PR на анализ LLM для генерации дополнительных вариантов проверок и рисков; итоговая ценность такого фидбека растёт вместе с объёмом контекста о специфике проекта, которым модель располагает.
+> A useful practice, though not a substitute for manual analysis — feed the PR diff to an LLM to generate extra check and risk ideas; the resulting feedback gets more valuable as the model has more context about the project's specifics.
 
-### Переиспользуемые тестовые сценарии
+### Reusable test scenarios
 
-В большинстве задач для воспроизведения похожих ситуаций используются одни и те же приёмы (отладочные конфигурации, тестовые скрипты, сохранённые сценарии). Если у команды есть возможность сохранять и переиспользовать такие заготовки (сниппеты, сохранённые графы логики, шаблоны запросов к телеметрии) — стоит вести их библиотеку: это значительно сокращает время подготовки к тестированию похожих задач в будущем.
+Most tasks reproduce similar situations using the same tricks (debug configurations, test scripts, saved scenarios). If the team can save and reuse these building blocks (snippets, saved logic graphs, telemetry query templates), it's worth keeping a library of them — it cuts prep time for testing similar tasks significantly down the line.
 
-## Частые проблемы
+## Common Pitfalls
 
-Большинство распространённых проблем — результат неверно переданных вводных данных, а не ошибок самого QA:
+Most common problems come from bad input data, not from QA's own mistakes:
 
-- нечётко сформулированная цель задачи
-- цель, которая перестала быть актуальной к моменту тестирования
-- неинформативное описание Pull Request / Merge Request
-- задача из бэклога, которую "хочется поскорее закрыть"
-- неверно выставленный Impact Analysis или Complexity Dev — либо не выставленный вовсе
-- PR, который долго не обновляли актуальной target-веткой
-- хранение ключевой информации о задаче в личных сообщениях или устаревших тредах чата вместо тикета
+- a vaguely stated task goal
+- a goal that stopped being relevant by the time testing started
+- an uninformative Pull Request / Merge Request description
+- a backlog task everyone just wants closed quickly
+- an incorrectly assigned Impact Analysis or Complexity Dev — or none assigned at all
+- a PR that hasn't been rebased onto its target branch in a long time
+- key task information living in DMs or stale chat threads instead of the ticket
 
-Отдельная категория — проблемы со стороны самого процесса тестирования: проверки выполнялись только в одной конфигурации окружения (например, только локально, без учёта распределённого/сетевого режима, если он применим к продукту), либо тестирование велось на устаревшей версии ветки, из-за конфликта с которой часть проверок пришлось повторять заново.
+A separate category is problems on the testing side itself: checks were only run in one environment configuration (for example, only locally, without the distributed/networked mode, if it applies to the product), or testing happened on a stale branch, and the resulting conflict forced part of the checks to be redone.
+
+___
+
+<b>Table of contents:</b>
+
+* [Can we expect two independent QA engineers to complete the same task with the same result?](#can-we-expect-two-independent-qa-engineers-to-complete-the-same-task-with-the-same-result)
+* [A universal AAA checklist does not exist.](#a-universal-aaa-checklist-does-not-exist)
+* [Why This Exists](#why-this-exists)
+* [Scope](#scope)
+* [Base Workflow](#base-workflow)
+* [The Testing Matrix](#the-testing-matrix)
+* [Framework](#framework)
+* [Testing Levels](#testing-levels)
+* [The Final Checklist](#the-final-checklist)
+* [Best Practices](#best-practices)
+* [Common Pitfalls](#common-pitfalls)
+
+___
+
+<p align="center">
+    I hope this framework helps make the QA testing scope on your tasks more predictable.
+</p>
+<p align="center">
+    <b>Best regards, Diana Grigorovich!</b>
+</p>
+<h1 align="center" style="color:FireBrick">
+    Thanks for your attention!
+</h1>
