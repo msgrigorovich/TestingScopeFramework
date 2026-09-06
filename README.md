@@ -151,6 +151,8 @@ The full result matrix at the base weights:
 
 [![Testing Scope Framework preview](assets/framework-preview.png)](framework.html)
 
+[Open the framework preview at full size](https://github.com/msgrigorovich/TestingScopeFramework/blob/main/assets/framework-preview.png?raw=true)
+
 [`framework.html`](framework.html) — a self-contained HTML tool (no build step, no dependencies, opens straight in a browser) that implements the formula above:
 
 - pick Impact Analysis and Complexity Dev (XS–XL)
