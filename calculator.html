@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing Scope Calculator</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 6px 18px rgba(0,0,0,.10);
+      --xs: #49c35c;
+      --s: #88cc1e;
+      --m: #e3b520;
+      --l: #f37a24;
+      --xl: #ea4c46;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 30px; }
+    h2 { font-size: 22px; margin-bottom: 14px; }
+    h3 { font-size: 18px; }
+    .muted { color: var(--muted); }
+    .small { font-size: 13px; line-height: 1.5; }
+
+    .formula {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      align-items: end;
+    }
+    .field { display: grid; gap: 8px; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: 13px; color: var(--muted); font-weight: 600; }
+    select, input, textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .warning-note {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      padding: 10px 12px;
+      border-left: 4px solid #d1d5db;
+      background: #fafafa;
+      border-radius: 10px;
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      overflow: hidden;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+    .top-bar .seg {
+      padding: 24px 8px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 24px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,.22);
+      opacity: .55;
+      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+    }
+    .top-bar .seg:last-child { border-right: none; }
+    .top-bar .seg.active {
+      opacity: 1;
+      transform: translateY(-1px);
+      box-shadow: inset 0 -4px 0 rgba(255,255,255,.28);
+    }
+
+    .xs { background: var(--xs); }
+    .s  { background: var(--s); }
+    .m  { background: var(--m); }
+    .l  { background: var(--l); }
+    .xl { background: var(--xl); }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0,1fr));
+      gap: 16px;
+    }
+
+    .level-card {
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, opacity .18s ease;
+      opacity: .62;
+    }
+    .level-card.active {
+      opacity: 1;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 26px rgba(0,0,0,.14);
+      border-color: #cbd5e1;
+    }
+
+    .level-head {
+      color: #fff;
+      padding: 18px 16px;
+      min-height: 90px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .level-head .level-code { font-size: 38px; font-weight: 900; letter-spacing: -.03em; }
+    .level-head .level-sub { font-size: 14px; font-weight: 700; opacity: .95; }
+
+    .level-body { padding: 16px; display: grid; gap: 14px; }
+    .inherits {
+      background: #f3f4f6;
+      color: #6b7280;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-style: italic;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 15px;
+      line-height: 1.45;
+      padding: 10px 12px 10px 14px;
+      position: relative;
+      border-radius: 14px;
+      background: #fafafa;
+      border: 1px solid #eceff3;
+      overflow: hidden;
+    }
+    .check::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: .9;
+    }
+    .check .icon {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #d1d5db;
+      margin-top: 2px;
+      line-height: 1;
+      background: #fff;
+    }
+
+    .controls-footer {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .result-box {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .result-main {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 800;
+    }
+    .result-meta {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .btn-primary { background: #111827; color: #fff; }
+
+    textarea {
+      min-height: 210px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.45;
+      background: #fcfcfd;
+    }
+
+    .copy-hint { font-size: 12px; color: var(--muted); }
+
+    @media (max-width: 1200px) {
+      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .top-bar { grid-template-columns: repeat(5, minmax(120px, 1fr)); overflow-x: auto; }
+      .inputs { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .controls-footer { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      body { padding: 12px; }
+      .cards { grid-template-columns: 1fr; }
+      .inputs { grid-template-columns: 1fr; }
+      .top-bar .seg { font-size: 20px; padding: 18px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="panel">
+      <h1>Testing Scope Calculator</h1>
+      <p class="muted" style="margin-top:10px;">
+        Калькулятор определяет итоговый уровень тестирования на основе двух осей: <strong>Impact Analysis</strong> и <strong>Complexity Dev</strong>.
+        Impact влияет на ширину регресса, Complexity — на глубину валидации логики. Подробности методологии — в
+        <a href="README.md">README.md</a>.
+      </p>
+      <div class="formula">Score = ImpactWeight &times; ImpactValue + ComplexityWeight &times; ComplexityValue</div>
+    </section>
+
+    <section class="panel">
+      <h2>Вводные параметры</h2>
+      <div class="inputs">
+        <div class="field">
+          <label for="impact">Impact Analysis</label>
+          <select id="impact">
+            <option value="XS">XS</option>
+            <option value="S" selected>S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="complexity">Complexity Dev</label>
+          <select id="complexity">
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M" selected>M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="impactWeight">Impact weight</label>
+          <input id="impactWeight" type="number" step="0.01" min="0" max="1" value="0.60" />
+        </div>
+        <div class="field">
+          <label for="complexityWeight">Complexity weight</label>
+          <input id="complexityWeight" type="number" step="0.01" min="0" max="1" value="0.40" />
+        </div>
+        <div class="field full">
+          <div class="warning-note">
+            Веса по умолчанию — 0.6 и 0.4 соответственно, потому что регрессионные риски (Impact) всегда приоритетнее глубины
+            валидации новой логики (Complexity). Веса можно изменить на любое соотношение, более актуальное для вашей задачи —
+            поле нормализуется к сумме 1 после того, как вы закончите ввод (потеря фокуса поля).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="top-bar" id="topBar">
+      <div class="seg xs" data-level="XS">XS</div>
+      <div class="seg s" data-level="S">S</div>
+      <div class="seg m" data-level="M">M</div>
+      <div class="seg l" data-level="L">L</div>
+      <div class="seg xl" data-level="XL">XL</div>
+    </section>
+
+    <section class="cards" id="cards"></section>
+
+    <section class="panel controls-footer">
+      <div class="result-box">
+        <div class="result-main">
+          <div class="pill" id="resultPill">Deep Validation</div>
+          <div class="result-meta" id="resultMeta"></div>
+        </div>
+        <div class="small muted" id="formulaDetails"></div>
+      </div>
+      <div class="actions">
+        <button class="btn-primary" id="copyChecklistBtn">Скопировать чек-лист</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <textarea id="jiraOutput" readonly></textarea>
+      <div class="copy-hint" style="margin-top:8px;">Содержимое выше можно вставить в комментарий тикета (например, в Text-режиме описания Jira). Чекбоксы остаются пустыми для ручного проставления по факту проверки.</div>
+    </section>
+  </div>
+
+  <script>
+    const mapValue = { XS: 1, S: 2, M: 3, L: 4, XL: 5 };
+    const reverseMap = { 1: 'XS', 2: 'S', 3: 'M', 4: 'L', 5: 'XL' };
+    const colorClass = { XS: 'xs', S: 's', M: 'm', L: 'l', XL: 'xl' };
+
+    const levelCardsData = {
+      XS: {
+        title: 'XS',
+        subtitle: 'Minimal Validation',
+        inherits: '',
+        checks: [
+          'Соответствие требованию',
+          'Позитивные сценарии',
+          'Точка изменений'
+        ]
+      },
+      S: {
+        title: 'S',
+        subtitle: 'Basic Validation',
+        inherits: 'Всё из XS +',
+        checks: [
+          'Базовые негативные сценарии',
+          'Базовые кейсы граничных значений / сценариев'
+        ]
+      },
+      M: {
+        title: 'M',
+        subtitle: 'Deep Validation',
+        inherits: 'Всё из S +',
+        checks: [
+          'Глубокий анализ реализованной логики (расчёт значений, формулы, переходы состояний и т.д.)',
+          'Работа всей механики, а не только локальной точки изменений'
+        ]
+      },
+      L: {
+        title: 'L',
+        subtitle: 'System Validation',
+        inherits: 'Всё из M +',
+        checks: [
+          'Проверка влияния на смежные механики и системы',
+          'Полный регресс всех смежных механик'
+        ]
+      },
+      XL: {
+        title: 'XL',
+        subtitle: 'Critical Validation',
+        inherits: 'Всё из L +',
+        checks: [
+          'Основной упор на негативные и нестандартные сценарии',
+          'Полный регресс по затронутому scope',
+          'Привлечение смежных команд / доменов при необходимости'
+        ]
+      }
+    };
+
+    const checklists = {
+      XS: [
+        'Проверить соответствие реализации требованиям / задаче',
+        'Проверить основной позитивный сценарий',
+        'Проверить точку изменения без выхода за пределы сценария'
+      ],
+      S: [
+        'Все проверки уровня XS',
+        'Проверить базовые негативные сценарии',
+        'Проверить базовые граничные значения / очевидные крайние кейсы'
+      ],
+      M: [
+        'Все проверки уровня S',
+        'Выполнить глубокий анализ реализованной логики',
+        'Проверить формулы / расчёты / сложные условия, если они есть',
+        'Проверить работу всей механики / системы, а не только локальной точки изменения'
+      ],
+      L: [
+        'Все проверки уровня M',
+        'Проверить влияние на смежные механики и системы',
+        'Выполнить полный регресс всех смежных механик',
+        'При необходимости привлечь вспомогательного QA из команды'
+      ],
+      XL: [
+        'Все проверки уровня L',
+        'Сделать основной упор на негативные и нестандартные сценарии',
+        'Выполнить полный регресс по затронутому scope',
+        'При необходимости привлечь другие команды / домены'
+      ]
+    };
+
+    const impactEl = document.getElementById('impact');
+    const complexityEl = document.getElementById('complexity');
+    const impactWeightEl = document.getElementById('impactWeight');
+    const complexityWeightEl = document.getElementById('complexityWeight');
+    const cardsEl = document.getElementById('cards');
+    const topBar = document.getElementById('topBar');
+    const resultPill = document.getElementById('resultPill');
+    const resultMeta = document.getElementById('resultMeta');
+    const formulaDetails = document.getElementById('formulaDetails');
+    const jiraOutput = document.getElementById('jiraOutput');
+    const copyChecklistBtn = document.getElementById('copyChecklistBtn');
+
+    function clamp01(value, fallback) {
+      if (!Number.isFinite(value)) return fallback;
+      return Math.min(1, Math.max(0, value));
+    }
+
+    // Reads current weight fields without mutating them, for live calculation while typing.
+    function readWeights() {
+      let impactWeight = clamp01(parseFloat(impactWeightEl.value), 0.6);
+      let complexityWeight = clamp01(parseFloat(complexityWeightEl.value), 0.4);
+      const sum = impactWeight + complexityWeight;
+      if (sum > 0) {
+        impactWeight = impactWeight / sum;
+        complexityWeight = complexityWeight / sum;
+      } else {
+        impactWeight = 0.6;
+        complexityWeight = 0.4;
+      }
+      return { impactWeight, complexityWeight };
+    }
+
+    // Writes normalized values back into the fields — only called on blur/change,
+    // so it never fights the user mid-keystroke.
+    function normalizeWeightFields() {
+      const { impactWeight, complexityWeight } = readWeights();
+      impactWeightEl.value = impactWeight.toFixed(2);
+      complexityWeightEl.value = complexityWeight.toFixed(2);
+      update();
+    }
+
+    function renderCards(activeLevel) {
+      cardsEl.innerHTML = '';
+      Object.entries(levelCardsData).forEach(([key, data]) => {
+        const card = document.createElement('div');
+        card.className = `level-card ${activeLevel === key ? 'active' : ''}`;
+        card.dataset.level = key;
+
+        card.innerHTML = `
+          <div class="level-head ${colorClass[key]}">
+            <div class="level-code">${data.title}</div>
+            <div class="level-sub">${data.subtitle}</div>
+          </div>
+          <div class="level-body">
+            <div class="inherits">${data.inherits || '&nbsp;'}</div>
+            ${data.checks.map(text => `
+              <div class="check ${colorClass[key]}">
+                <span class="icon">&#9675;</span>
+                <span>${text}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+
+        cardsEl.appendChild(card);
+      });
+
+      topBar.querySelectorAll('.seg').forEach(seg => {
+        seg.classList.toggle('active', seg.dataset.level === activeLevel);
+      });
+    }
+
+    function buildChecklist(level) {
+      const title = levelCardsData[level].subtitle;
+      const rows = checklists[level]
+        .map((text, idx) => `|${idx + 1}. ${text}|        (/) *{color:#00875a}Passed{color}*|`)
+        .join('\n');
+
+      return `||Уровень тестирования||${level} — ${title}||
+||Статус||Проверка||
+${rows}`;
+    }
+
+    function update() {
+      const impact = impactEl.value;
+      const complexity = complexityEl.value;
+      const impactValue = mapValue[impact];
+      const complexityValue = mapValue[complexity];
+      const { impactWeight, complexityWeight } = readWeights();
+
+      const rawScore = impactWeight * impactValue + complexityWeight * complexityValue;
+      const rounded = Math.min(5, Math.max(1, Math.ceil(rawScore)));
+      const qaLevel = reverseMap[rounded];
+      const levelTitle = levelCardsData[qaLevel].subtitle;
+
+      renderCards(qaLevel);
+
+      resultPill.className = `pill ${colorClass[qaLevel]}`;
+      resultPill.textContent = levelTitle;
+      resultMeta.textContent = `Impact = ${impact}, Complexity = ${complexity}, Impact Analysis QA = ${qaLevel}`;
+      formulaDetails.textContent = `Score = ${impactWeight.toFixed(2)} × ${impactValue} + ${complexityWeight.toFixed(2)} × ${complexityValue} = ${rawScore.toFixed(2)} → CEIL = ${rounded} → ${qaLevel}`;
+
+      jiraOutput.value = buildChecklist(qaLevel);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        jiraOutput.select();
+        document.execCommand('copy');
+      }
+    }
+
+    [impactEl, complexityEl].forEach(el => el.addEventListener('change', update));
+    [impactWeightEl, complexityWeightEl].forEach(el => {
+      el.addEventListener('input', update);
+      el.addEventListener('change', normalizeWeightFields);
+    });
+
+    copyChecklistBtn.addEventListener('click', async () => {
+      await copyText(jiraOutput.value);
+      copyChecklistBtn.textContent = 'Скопировано';
+      setTimeout(() => copyChecklistBtn.textContent = 'Скопировать чек-лист', 1200);
+    });
+
+    update();
+  </script>
+</body>
+</html>
