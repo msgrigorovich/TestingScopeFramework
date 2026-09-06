@@ -1,582 +1,761 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testing Scope Calculator</title>
-  <style>
-    :root {
-      --bg: #f3f4f6;
-      --card: #ffffff;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --shadow: 0 6px 18px rgba(0,0,0,.10);
-      --xs: #49c35c;
-      --s: #88cc1e;
-      --m: #e3b520;
-      --l: #f37a24;
-      --xl: #ea4c46;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Testing Scope Calculator</title>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #12151c;
+    --panel-2: #171b24;
+    --panel-3: #1c2029;
+    --border: #262b37;
+    --text: #e7e9ee;
+    --muted: #8992a6;
+    --muted-2: #5f6779;
+    --accent: #8ab4ff;
+    --shadow: 0 14px 34px rgba(0,0,0,.45);
+    --radius: 12px;
+    --xs: #4ade80;
+    --s:  #a3e635;
+    --m:  #facc15;
+    --l:  #fb923c;
+    --xl: #f87171;
+  }
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: 24px;
-    }
+  * { box-sizing: border-box; }
 
-    .wrap {
-      max-width: 1320px;
-      margin: 0 auto;
-      display: grid;
-      gap: 22px;
-    }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  }
 
-    .panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
+  .app {
+    height: 100vh;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
-    h1, h2, h3, p { margin: 0; }
-    h1 { font-size: 30px; }
-    h2 { font-size: 22px; margin-bottom: 14px; }
-    h3 { font-size: 18px; }
-    .muted { color: var(--muted); }
-    .small { font-size: 13px; line-height: 1.5; }
+  /* ---- header ---- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex: 0 0 auto;
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .topbar .sub {
+    margin-top: 2px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .topbar .sub a { color: var(--accent); text-decoration: none; }
+  .topbar .sub a:hover { text-decoration: underline; }
 
-    .formula {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 14px;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
+  .result-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 8px 6px 6px;
+    box-shadow: var(--shadow);
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 13px;
+    color: #0b0d12;
+    white-space: nowrap;
+  }
+  .result-chip .meta { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .result-chip .formula { font-size: 10.5px; color: var(--muted-2); font-family: ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
+  .result-chip .meta-col { display: flex; flex-direction: column; gap: 1px; }
 
-    .inputs {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      align-items: end;
-    }
-    .field { display: grid; gap: 8px; }
-    .field.full { grid-column: 1 / -1; }
-    label { font-size: 13px; color: var(--muted); font-weight: 600; }
-    select, input, textarea {
-      width: 100%;
-      padding: 11px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #fff;
-      font-size: 14px;
-      color: var(--text);
-    }
+  /* ---- controls row ---- */
+  .controls {
+    flex: 0 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: end;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    box-shadow: var(--shadow);
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; min-width: 120px; }
+  .field.grow { flex: 1 1 160px; }
+  .field.narrow { min-width: 90px; flex: 0 0 90px; }
+  label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  select, input {
+    width: 100%;
+    padding: 7px 9px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    font-size: 13px;
+  }
+  select:focus, input:focus { outline: 1px solid var(--accent); }
+  .controls-note { flex-basis: 100%; font-size: 10.5px; color: var(--muted-2); line-height: 1.4; }
 
-    .warning-note {
-      font-size: 12px;
-      line-height: 1.45;
-      color: var(--muted);
-      padding: 10px 12px;
-      border-left: 4px solid #d1d5db;
-      background: #fafafa;
-      border-radius: 10px;
-    }
+  /* ---- level strip ---- */
+  .level-strip {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .seg {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    background: var(--panel);
+    color: var(--muted);
+    font-weight: 800;
+    font-size: 15px;
+    transition: transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+  }
+  .seg .seg-sub { display: block; font-size: 9px; font-weight: 700; letter-spacing: .03em; opacity: .8; margin-top: 1px; text-transform: uppercase; }
+  .seg:hover { border-color: var(--muted-2); }
+  .seg.viewed { color: #0b0d12; transform: translateY(-1px); box-shadow: var(--shadow); }
+  .seg.computed:not(.viewed) { border-color: currentColor; color: var(--text); }
+  .seg.computed::after {
+    content: "";
+    position: absolute;
+    top: 5px; right: 6px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .seg.computed.viewed::after { background: #0b0d12; }
 
-    .top-bar {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      overflow: hidden;
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-    }
-    .top-bar .seg {
-      padding: 24px 8px;
-      color: #fff;
-      font-weight: 800;
-      font-size: 24px;
-      text-align: center;
-      border-right: 1px solid rgba(255,255,255,.22);
-      opacity: .55;
-      transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
-    }
-    .top-bar .seg:last-child { border-right: none; }
-    .top-bar .seg.active {
-      opacity: 1;
-      transform: translateY(-1px);
-      box-shadow: inset 0 -4px 0 rgba(255,255,255,.28);
-    }
+  /* ---- main area ---- */
+  .main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 10px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
 
-    .xs { background: var(--xs); }
-    .s  { background: var(--s); }
-    .m  { background: var(--m); }
-    .l  { background: var(--l); }
-    .xl { background: var(--xl); }
+  /* ---- detail panel ---- */
+  .detail-head {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .detail-head .code {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0b0d12;
+    width: 46px; height: 46px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .detail-head .titles { min-width: 0; }
+  .detail-head .titles .name { font-size: 14px; font-weight: 800; }
+  .detail-head .titles .goal { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .detail-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 12px; }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0,1fr));
-      gap: 16px;
-    }
+  .kv {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+    gap: 4px 10px;
+    font-size: 12px;
+  }
+  .kv dt { color: var(--muted); font-weight: 700; }
+  .kv dd { margin: 0; color: var(--text); }
 
-    .level-card {
-      border-radius: 16px;
-      overflow: hidden;
-      background: var(--card);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, opacity .18s ease;
-      opacity: .62;
-    }
-    .level-card.active {
-      opacity: 1;
-      transform: translateY(-3px);
-      box-shadow: 0 12px 26px rgba(0,0,0,.14);
-      border-color: #cbd5e1;
-    }
+  .inherits-note {
+    font-size: 11.5px;
+    font-style: italic;
+    color: var(--muted);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+  }
 
-    .level-head {
-      color: #fff;
-      padding: 18px 16px;
-      min-height: 90px;
-      display: grid;
-      align-content: center;
-      justify-items: center;
-      gap: 8px;
-      text-align: center;
-    }
-    .level-head .level-code { font-size: 38px; font-weight: 900; letter-spacing: -.03em; }
-    .level-head .level-sub { font-size: 14px; font-weight: 700; opacity: .95; }
+  .check-list { display: flex; flex-direction: column; gap: 6px; }
+  .check-list .group-label { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted-2); font-weight: 800; margin: 4px 0 -2px; }
+  .check {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 8px;
+    align-items: start;
+    font-size: 12.5px;
+    line-height: 1.4;
+    padding: 7px 9px;
+    border-radius: 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid currentColor;
+  }
+  .check .icon {
+    width: 14px; height: 14px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    margin-top: 2px;
+  }
 
-    .level-body { padding: 16px; display: grid; gap: 14px; }
-    .inherits {
-      background: #f3f4f6;
-      color: #6b7280;
-      border-radius: 10px;
-      padding: 10px 12px;
-      font-size: 13px;
-      font-style: italic;
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-    }
+  /* ---- output panel ---- */
+  .tabs {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    box-shadow: none;
+  }
+  .tab-btn.active { background: var(--accent); color: #0b0d12; border-color: var(--accent); }
+  .tabs .spacer { flex: 1; }
+  .copy-btn {
+    background: var(--text);
+    color: #0b0d12;
+    border: none;
+    font-size: 11.5px;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    box-shadow: none;
+  }
 
-    .check {
-      display: grid;
-      grid-template-columns: 18px 1fr;
-      gap: 10px;
-      align-items: start;
-      font-size: 15px;
-      line-height: 1.45;
-      padding: 10px 12px 10px 14px;
-      position: relative;
-      border-radius: 14px;
-      background: #fafafa;
-      border: 1px solid #eceff3;
-      overflow: hidden;
-    }
-    .check::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 8px;
-      bottom: 8px;
-      width: 3px;
-      border-radius: 999px;
-      background: currentColor;
-      opacity: .9;
-    }
-    .check .icon {
-      width: 18px;
-      height: 18px;
-      border: 2px solid #d1d5db;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      color: #d1d5db;
-      margin-top: 2px;
-      line-height: 1;
-      background: #fff;
-    }
+  .output-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 10px 12px; }
 
-    .controls-footer {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: start;
-    }
+  .preview-header {
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 11.5px; color: var(--muted);
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 8px; margin-bottom: 8px;
+  }
+  .preview-header b { color: var(--text); }
+  .preview-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 7px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    margin-bottom: 5px;
+  }
+  .status-pill {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--panel-3);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
 
-    .result-box {
-      display: grid;
-      gap: 10px;
-      padding: 16px;
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-    }
-    .result-main {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 16px;
-      align-items: center;
-    }
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      color: #fff;
-      font-weight: 800;
-    }
-    .result-meta {
-      color: var(--muted);
-      font-size: 14px;
-    }
+  textarea#markupOutput {
+    width: 100%;
+    height: 100%;
+    min-height: 160px;
+    resize: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel-2);
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 10px;
+  }
 
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      box-shadow: var(--shadow);
-    }
-    .btn-primary { background: #111827; color: #fff; }
-
-    textarea {
-      min-height: 210px;
-      resize: vertical;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.45;
-      background: #fcfcfd;
-    }
-
-    .copy-hint { font-size: 12px; color: var(--muted); }
-
-    @media (max-width: 1200px) {
-      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .top-bar { grid-template-columns: repeat(5, minmax(120px, 1fr)); overflow-x: auto; }
-      .inputs { grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .controls-footer { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 760px) {
-      body { padding: 12px; }
-      .cards { grid-template-columns: 1fr; }
-      .inputs { grid-template-columns: 1fr; }
-      .top-bar .seg { font-size: 20px; padding: 18px 8px; }
-    }
-  </style>
+  @media (max-width: 980px) {
+    html, body { overflow: auto; }
+    .app { height: auto; min-height: 100vh; }
+    .main { grid-template-columns: 1fr; }
+    .level-strip { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="panel">
-      <h1>Testing Scope Calculator</h1>
-      <p class="muted" style="margin-top:10px;">
-        Калькулятор определяет итоговый уровень тестирования на основе двух осей: <strong>Impact Analysis</strong> и <strong>Complexity Dev</strong>.
-        Impact влияет на ширину регресса, Complexity — на глубину валидации логики. Подробности методологии — в
-        <a href="README.md">README.md</a>.
-      </p>
-      <div class="formula">Score = ImpactWeight &times; ImpactValue + ComplexityWeight &times; ComplexityValue</div>
-    </section>
+  <div class="app">
 
-    <section class="panel">
-      <h2>Вводные параметры</h2>
-      <div class="inputs">
-        <div class="field">
-          <label for="impact">Impact Analysis</label>
-          <select id="impact">
-            <option value="XS">XS</option>
-            <option value="S" selected>S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select>
+    <div class="topbar">
+      <div>
+        <h1>Testing Scope Calculator</h1>
+        <div class="sub">Impact Analysis × Complexity Dev → QA level. Methodology: <a href="README.md">README.md</a></div>
+      </div>
+      <div class="result-chip">
+        <div class="pill" id="resultPill">Deep Validation</div>
+        <div class="meta-col">
+          <div class="meta" id="resultMeta"></div>
+          <div class="formula" id="formulaDetails"></div>
         </div>
-        <div class="field">
-          <label for="complexity">Complexity Dev</label>
-          <select id="complexity">
-            <option value="XS">XS</option>
-            <option value="S">S</option>
-            <option value="M" selected>M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="impactWeight">Impact weight</label>
-          <input id="impactWeight" type="number" step="0.01" min="0" max="1" value="0.60" />
-        </div>
-        <div class="field">
-          <label for="complexityWeight">Complexity weight</label>
-          <input id="complexityWeight" type="number" step="0.01" min="0" max="1" value="0.40" />
-        </div>
-        <div class="field full">
-          <div class="warning-note">
-            Веса по умолчанию — 0.6 и 0.4 соответственно, потому что регрессионные риски (Impact) всегда приоритетнее глубины
-            валидации новой логики (Complexity). Веса можно изменить на любое соотношение, более актуальное для вашей задачи —
-            поле нормализуется к сумме 1 после того, как вы закончите ввод (потеря фокуса поля).
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="field narrow">
+        <label for="impact">Impact</label>
+        <select id="impact">
+          <option value="XS">XS</option>
+          <option value="S" selected>S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+      </div>
+      <div class="field narrow">
+        <label for="complexity">Complexity</label>
+        <select id="complexity">
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M" selected>M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+        </select>
+      </div>
+      <div class="field grow">
+        <label for="component">Component</label>
+        <select id="component">
+          <option value="Experiment" selected>Experiment (FReactionModel)</option>
+          <option value="Interaction">Interaction</option>
+          <option value="TestStand">Test Stand</option>
+          <option value="Regression">Regression</option>
+          <option value="Telemetry">Telemetry</option>
+        </select>
+      </div>
+      <div class="field narrow">
+        <label for="impactWeight">Impact wt.</label>
+        <input id="impactWeight" type="number" step="0.01" min="0" max="1" value="0.60" />
+      </div>
+      <div class="field narrow">
+        <label for="complexityWeight">Complexity wt.</label>
+        <input id="complexityWeight" type="number" step="0.01" min="0" max="1" value="0.40" />
+      </div>
+      <div class="controls-note">Default weights are 0.6 / 0.4 — regression risk (Impact) outweighs logic-depth risk (Complexity). Weights renormalize to sum to 1 on blur.</div>
+    </div>
+
+    <div class="level-strip" id="levelStrip">
+      <div class="seg xs" data-level="XS">XS<span class="seg-sub">Minimal</span></div>
+      <div class="seg s" data-level="S">S<span class="seg-sub">Basic</span></div>
+      <div class="seg m" data-level="M">M<span class="seg-sub">Deep</span></div>
+      <div class="seg l" data-level="L">L<span class="seg-sub">System</span></div>
+      <div class="seg xl" data-level="XL">XL<span class="seg-sub">Critical</span></div>
+    </div>
+
+    <div class="main">
+      <div class="panel" id="detailPanel">
+        <div class="detail-head">
+          <div class="code" id="detailCode">S</div>
+          <div class="titles">
+            <div class="name" id="detailName">S — Basic Validation</div>
+            <div class="goal" id="detailGoal"></div>
           </div>
         </div>
+        <div class="detail-body" id="detailBody"></div>
       </div>
-    </section>
 
-    <section class="top-bar" id="topBar">
-      <div class="seg xs" data-level="XS">XS</div>
-      <div class="seg s" data-level="S">S</div>
-      <div class="seg m" data-level="M">M</div>
-      <div class="seg l" data-level="L">L</div>
-      <div class="seg xl" data-level="XL">XL</div>
-    </section>
-
-    <section class="cards" id="cards"></section>
-
-    <section class="panel controls-footer">
-      <div class="result-box">
-        <div class="result-main">
-          <div class="pill" id="resultPill">Deep Validation</div>
-          <div class="result-meta" id="resultMeta"></div>
+      <div class="panel">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="preview" id="tabPreviewBtn">Preview</button>
+          <button class="tab-btn" data-tab="markup" id="tabMarkupBtn">Markup</button>
+          <div class="spacer"></div>
+          <button class="copy-btn" id="copyBtn">Copy for Jira</button>
         </div>
-        <div class="small muted" id="formulaDetails"></div>
+        <div class="output-body" id="previewTab"></div>
+        <div class="output-body" id="markupTab" style="display:none;">
+          <textarea id="markupOutput" readonly></textarea>
+        </div>
       </div>
-      <div class="actions">
-        <button class="btn-primary" id="copyChecklistBtn">Скопировать чек-лист</button>
-      </div>
-    </section>
-
-    <section class="panel">
-      <textarea id="jiraOutput" readonly></textarea>
-      <div class="copy-hint" style="margin-top:8px;">Содержимое выше можно вставить в комментарий тикета (например, в Text-режиме описания Jira). Чекбоксы остаются пустыми для ручного проставления по факту проверки.</div>
-    </section>
+    </div>
   </div>
 
-  <script>
-    const mapValue = { XS: 1, S: 2, M: 3, L: 4, XL: 5 };
-    const reverseMap = { 1: 'XS', 2: 'S', 3: 'M', 4: 'L', 5: 'XL' };
-    const colorClass = { XS: 'xs', S: 's', M: 'm', L: 'l', XL: 'xl' };
+<script>
+  const mapValue = { XS: 1, S: 2, M: 3, L: 4, XL: 5 };
+  const reverseMap = { 1: 'XS', 2: 'S', 3: 'M', 4: 'L', 5: 'XL' };
+  const colorClass = { XS: 'xs', S: 's', M: 'm', L: 'l', XL: 'xl' };
 
-    const levelCardsData = {
-      XS: {
-        title: 'XS',
-        subtitle: 'Minimal Validation',
-        inherits: '',
-        checks: [
-          'Соответствие требованию',
-          'Позитивные сценарии',
-          'Точка изменений'
-        ]
-      },
-      S: {
-        title: 'S',
-        subtitle: 'Basic Validation',
-        inherits: 'Всё из XS +',
-        checks: [
-          'Базовые негативные сценарии',
-          'Базовые кейсы граничных значений / сценариев'
-        ]
-      },
-      M: {
-        title: 'M',
-        subtitle: 'Deep Validation',
-        inherits: 'Всё из S +',
-        checks: [
-          'Глубокий анализ реализованной логики (расчёт значений, формулы, переходы состояний и т.д.)',
-          'Работа всей механики, а не только локальной точки изменений'
-        ]
-      },
-      L: {
-        title: 'L',
-        subtitle: 'System Validation',
-        inherits: 'Всё из M +',
-        checks: [
-          'Проверка влияния на смежные механики и системы',
-          'Полный регресс всех смежных механик'
-        ]
-      },
-      XL: {
-        title: 'XL',
-        subtitle: 'Critical Validation',
-        inherits: 'Всё из L +',
-        checks: [
-          'Основной упор на негативные и нестандартные сценарии',
-          'Полный регресс по затронутому scope',
-          'Привлечение смежных команд / доменов при необходимости'
-        ]
-      }
-    };
-
-    const checklists = {
-      XS: [
-        'Проверить соответствие реализации требованиям / задаче',
-        'Проверить основной позитивный сценарий',
-        'Проверить точку изменения без выхода за пределы сценария'
-      ],
-      S: [
-        'Все проверки уровня XS',
-        'Проверить базовые негативные сценарии',
-        'Проверить базовые граничные значения / очевидные крайние кейсы'
-      ],
-      M: [
-        'Все проверки уровня S',
-        'Выполнить глубокий анализ реализованной логики',
-        'Проверить формулы / расчёты / сложные условия, если они есть',
-        'Проверить работу всей механики / системы, а не только локальной точки изменения'
-      ],
-      L: [
-        'Все проверки уровня M',
-        'Проверить влияние на смежные механики и системы',
-        'Выполнить полный регресс всех смежных механик',
-        'При необходимости привлечь вспомогательного QA из команды'
-      ],
-      XL: [
-        'Все проверки уровня L',
-        'Сделать основной упор на негативные и нестандартные сценарии',
-        'Выполнить полный регресс по затронутому scope',
-        'При необходимости привлечь другие команды / домены'
+  // Level metadata mirrors README.md "Testing levels" section 1:1 (do not
+  // contradict it) -- only checklist item phrasing is this tool's own.
+  const levelMeta = {
+    XS: {
+      subtitle: 'Minimal Validation',
+      goal: 'Local change verification', scope: 'Change point',
+      meaning: 'Verifying correctness of a specific change without analyzing the system',
+      whatItMeans: 'The change works at its point of application; behavior beyond it is not explored',
+      depth: 'Surface-level (no logic analysis)',
+      breadth: 'Change point only — the scenario the task was made for',
+      boundary: 'Alternative paths, states and dependencies are not checked',
+      inherits: '',
+      checks: ['Requirement compliance', 'Positive scenario', 'Change point verification']
+    },
+    S: {
+      subtitle: 'Basic Validation',
+      goal: 'Basic logic validation', scope: 'Change point + nearby scenarios',
+      meaning: 'Verifying basic logic and obvious deviations',
+      whatItMeans: 'Not just the positive scenario — simple deviations in behavior too',
+      depth: 'Low (basic logic)',
+      breadth: 'Change point + immediate surroundings — scenarios using the same logic',
+      boundary: 'Complex states and transitions are not checked',
+      inherits: 'All of XS +',
+      checks: ['Basic negative scenarios', 'Basic boundary values / edge cases']
+    },
+    M: {
+      subtitle: 'Deep Validation',
+      goal: 'Deep mechanic verification', scope: 'The whole mechanic',
+      meaning: 'Verifying the mechanic as a whole logical system',
+      whatItMeans: 'The mechanic is a set of states, transitions and dependencies',
+      depth: 'Medium–high',
+      breadth: 'The whole mechanic + all scenarios within it',
+      boundary: 'We do not go beyond the mechanic',
+      inherits: 'All of S +',
+      checks: [
+        'Deep analysis of implemented logic (calculations, formulas, state transitions)',
+        'Full mechanic behavior, not just the local change point',
+        'State transition checks',
+        'Action combinatorics',
+        'Data consistency checks'
       ]
-    };
-
-    const impactEl = document.getElementById('impact');
-    const complexityEl = document.getElementById('complexity');
-    const impactWeightEl = document.getElementById('impactWeight');
-    const complexityWeightEl = document.getElementById('complexityWeight');
-    const cardsEl = document.getElementById('cards');
-    const topBar = document.getElementById('topBar');
-    const resultPill = document.getElementById('resultPill');
-    const resultMeta = document.getElementById('resultMeta');
-    const formulaDetails = document.getElementById('formulaDetails');
-    const jiraOutput = document.getElementById('jiraOutput');
-    const copyChecklistBtn = document.getElementById('copyChecklistBtn');
-
-    function clamp01(value, fallback) {
-      if (!Number.isFinite(value)) return fallback;
-      return Math.min(1, Math.max(0, value));
+    },
+    L: {
+      subtitle: 'System Validation',
+      goal: 'System-level verification', scope: 'Mechanic + adjacent systems',
+      meaning: "Verifying the mechanic's interaction with other systems",
+      whatItMeans: 'Not just the mechanic itself, but how it affects and depends on other systems',
+      depth: 'High',
+      breadth: 'Mechanic + related systems and interaction scenarios',
+      boundary: 'Does not cover the entire product',
+      inherits: 'All of M +',
+      checks: [
+        'Impact on adjacent mechanics and systems',
+        'Full regression of all adjacent mechanics',
+        'System interaction checks'
+      ]
+    },
+    XL: {
+      subtitle: 'Critical Validation',
+      goal: 'Critical verification', scope: 'Cross-system / cross-team regression',
+      meaning: 'Verifying with the maximum level of distrust toward the system',
+      whatItMeans: 'The system can break in unexpected places',
+      depth: 'Maximum',
+      breadth: 'Cross-system + cross-domain regression',
+      boundary: 'Practically absent — checks skew heavily toward negative scenarios',
+      inherits: 'All of L +',
+      checks: [
+        'Heavy focus on negative and non-standard scenarios',
+        'Full regression across the affected scope',
+        'Extreme / edge conditions',
+        'Performance check',
+        'Cross-team involvement where needed'
+      ]
     }
+  };
 
-    // Reads current weight fields without mutating them, for live calculation while typing.
-    function readWeights() {
-      let impactWeight = clamp01(parseFloat(impactWeightEl.value), 0.6);
-      let complexityWeight = clamp01(parseFloat(complexityWeightEl.value), 0.4);
-      const sum = impactWeight + complexityWeight;
-      if (sum > 0) {
-        impactWeight = impactWeight / sum;
-        complexityWeight = complexityWeight / sum;
-      } else {
-        impactWeight = 0.6;
-        complexityWeight = 0.4;
-      }
-      return { impactWeight, complexityWeight };
+  // Component checklists, grounded in qalab's own automation suite
+  // (see qalab/Docs/TestStrategy.md) -- one concrete testing surface per module.
+  const componentChecklists = {
+    Experiment: {
+      label: 'Experiment (FReactionModel / UExperimentComponent)',
+      checks: [
+        "EExperimentFailureReason set correctly for MissingReagentA / MissingReagentB",
+        'Documented boundary temperatures (min/max) are accepted, not rejected',
+        'State transitions Idle → Ready → Running → Completed / Failed / Cancelled',
+        'A duplicate StartExperiment() call is rejected and does not mutate the existing result',
+        'PreviewResult() matches Evaluate() output without mutating component state'
+      ]
+    },
+    Interaction: {
+      label: 'Interaction (InteractionComponent / Interactable)',
+      checks: [
+        'TryInteract() succeeds within interaction range',
+        'TryInteract() fails outside interaction range',
+        "A station's interaction count increments exactly once per successful interaction"
+      ]
+    },
+    TestStand: {
+      label: 'Test Stand (AReactionTestStand)',
+      checks: [
+        'RunSweep() produces the expected number of configs and total runs',
+        'The swept parameter actually varies across configs (not stuck/repeated)',
+        'Non-swept parameters stay constant across the sweep',
+        'Repeated runs of the same config are deterministic',
+        'ClearRunRecords() empties run history'
+      ]
+    },
+    Regression: {
+      label: 'Regression (FRegressionAnalyzer)',
+      checks: [
+        'ComputeStats() (mean/median/std.dev/p95/max) matches hand-checkable numbers',
+        'ComputeBaseline() aggregates Yield / ReactionTime / PeakTemperature / FailureRate correctly',
+        'An intentional metric regression triggers bWarning on the correct row only',
+        'A matching current-vs-baseline batch produces no warning (no false positives)',
+        'CompareToBaseline() marks the report inconclusive below MinRunsBeforeComparison'
+      ]
+    },
+    Telemetry: {
+      label: 'Telemetry (UQATelemetryLibrary / FTelemetryExporter)',
+      checks: [
+        'BuildTelemetryRecords() assigns sequential RunIds and the given ScenarioId',
+        'Completed / Failed results map to the correct human-readable string',
+        'CSV export round-trips: header + exactly one row per record',
+        'JSON export round-trips: valid array with matching field values',
+        'Single-run export writes exactly one row/element, not a whole batch'
+      ]
     }
+  };
 
-    // Writes normalized values back into the fields — only called on blur/change,
-    // so it never fights the user mid-keystroke.
-    function normalizeWeightFields() {
-      const { impactWeight, complexityWeight } = readWeights();
-      impactWeightEl.value = impactWeight.toFixed(2);
-      complexityWeightEl.value = complexityWeight.toFixed(2);
-      update();
+  const impactEl = document.getElementById('impact');
+  const complexityEl = document.getElementById('complexity');
+  const componentEl = document.getElementById('component');
+  const impactWeightEl = document.getElementById('impactWeight');
+  const complexityWeightEl = document.getElementById('complexityWeight');
+  const levelStrip = document.getElementById('levelStrip');
+  const resultPill = document.getElementById('resultPill');
+  const resultMeta = document.getElementById('resultMeta');
+  const formulaDetails = document.getElementById('formulaDetails');
+  const detailCode = document.getElementById('detailCode');
+  const detailName = document.getElementById('detailName');
+  const detailGoal = document.getElementById('detailGoal');
+  const detailBody = document.getElementById('detailBody');
+  const previewTab = document.getElementById('previewTab');
+  const markupOutput = document.getElementById('markupOutput');
+  const tabPreviewBtn = document.getElementById('tabPreviewBtn');
+  const tabMarkupBtn = document.getElementById('tabMarkupBtn');
+  const previewTabEl = document.getElementById('previewTab');
+  const markupTabEl = document.getElementById('markupTab');
+  const copyBtn = document.getElementById('copyBtn');
+
+  let computedLevel = 'S';
+  let viewedLevel = 'S';
+  let activeTab = 'preview';
+
+  function clamp01(value, fallback) {
+    if (!Number.isFinite(value)) return fallback;
+    return Math.min(1, Math.max(0, value));
+  }
+
+  // Reads current weight fields without mutating them, for live calculation while typing.
+  function readWeights() {
+    let impactWeight = clamp01(parseFloat(impactWeightEl.value), 0.6);
+    let complexityWeight = clamp01(parseFloat(complexityWeightEl.value), 0.4);
+    const sum = impactWeight + complexityWeight;
+    if (sum > 0) {
+      impactWeight = impactWeight / sum;
+      complexityWeight = complexityWeight / sum;
+    } else {
+      impactWeight = 0.6;
+      complexityWeight = 0.4;
     }
+    return { impactWeight, complexityWeight };
+  }
 
-    function renderCards(activeLevel) {
-      cardsEl.innerHTML = '';
-      Object.entries(levelCardsData).forEach(([key, data]) => {
-        const card = document.createElement('div');
-        card.className = `level-card ${activeLevel === key ? 'active' : ''}`;
-        card.dataset.level = key;
+  // Writes normalized values back into the fields -- only on blur/change,
+  // so it never fights the user mid-keystroke.
+  function normalizeWeightFields() {
+    const { impactWeight, complexityWeight } = readWeights();
+    impactWeightEl.value = impactWeight.toFixed(2);
+    complexityWeightEl.value = complexityWeight.toFixed(2);
+    update(true);
+  }
 
-        card.innerHTML = `
-          <div class="level-head ${colorClass[key]}">
-            <div class="level-code">${data.title}</div>
-            <div class="level-sub">${data.subtitle}</div>
-          </div>
-          <div class="level-body">
-            <div class="inherits">${data.inherits || '&nbsp;'}</div>
-            ${data.checks.map(text => `
-              <div class="check ${colorClass[key]}">
-                <span class="icon">&#9675;</span>
-                <span>${text}</span>
-              </div>
-            `).join('')}
-          </div>
-        `;
+  function renderLevelStrip() {
+    levelStrip.querySelectorAll('.seg').forEach(seg => {
+      const level = seg.dataset.level;
+      seg.classList.toggle('viewed', level === viewedLevel);
+      seg.classList.toggle('computed', level === computedLevel);
+      seg.style.background = level === viewedLevel ? `var(--${colorClass[level]})` : '';
+      seg.style.color = level === viewedLevel ? '' : `var(--${colorClass[level]})`;
+    });
+  }
 
-        cardsEl.appendChild(card);
-      });
+  function renderDetail() {
+    const data = levelMeta[viewedLevel];
+    const cls = colorClass[viewedLevel];
 
-      topBar.querySelectorAll('.seg').forEach(seg => {
-        seg.classList.toggle('active', seg.dataset.level === activeLevel);
-      });
-    }
+    detailCode.textContent = viewedLevel;
+    detailCode.style.background = `var(--${cls})`;
+    detailName.textContent = `${viewedLevel} — ${data.subtitle}`;
+    detailGoal.textContent = `${data.goal} · regression scope: ${data.scope}`;
 
-    function buildChecklist(level) {
-      const title = levelCardsData[level].subtitle;
-      const rows = checklists[level]
-        .map((text, idx) => `|${idx + 1}. ${text}|        (/) *{color:#00875a}Passed{color}*|`)
-        .join('\n');
+    const component = componentChecklists[componentEl.value];
 
-      return `||Уровень тестирования||${level} — ${title}||
-||Статус||Проверка||
+    detailBody.innerHTML = `
+      <dl class="kv">
+        <dt>Meaning</dt><dd>${data.meaning}</dd>
+        <dt>What it means</dt><dd>${data.whatItMeans}</dd>
+        <dt>Depth</dt><dd>${data.depth}</dd>
+        <dt>Breadth</dt><dd>${data.breadth}</dd>
+        <dt>Boundary</dt><dd>${data.boundary}</dd>
+      </dl>
+      ${data.inherits ? `<div class="inherits-note">${data.inherits}</div>` : ''}
+      <div class="check-list">
+        ${data.checks.map(text => `<div class="check ${cls}"><span class="icon"></span><span>${text}</span></div>`).join('')}
+        <div class="group-label">Component — ${component.label}</div>
+        ${component.checks.map(text => `<div class="check ${cls}"><span class="icon"></span><span>${text}</span></div>`).join('')}
+      </div>
+    `;
+  }
+
+  function allChecksFor(level, component) {
+    return [...levelMeta[level].checks, ...componentChecklists[component].checks];
+  }
+
+  function renderPreview() {
+    const level = viewedLevel;
+    const data = levelMeta[level];
+    const component = componentChecklists[componentEl.value];
+    const items = allChecksFor(level, componentEl.value);
+
+    previewTab.innerHTML = `
+      <div class="preview-header">
+        <div>Testing level: <b>${level} — ${data.subtitle}</b></div>
+        <div>Component: <b>${component.label}</b></div>
+      </div>
+      ${items.map((text, i) => `
+        <div class="preview-row">
+          <span>${i + 1}. ${text}</span>
+          <span class="status-pill">Pending</span>
+        </div>
+      `).join('')}
+    `;
+  }
+
+  function renderMarkup() {
+    const level = viewedLevel;
+    const data = levelMeta[level];
+    const component = componentChecklists[componentEl.value];
+    const items = allChecksFor(level, componentEl.value);
+
+    const rows = items.map((text, i) => `|${i + 1}. ${text}|☐ Pending|`).join('\n');
+
+    markupOutput.value = `||Testing Level||${level} — ${data.subtitle}||
+||Component||${component.label}||
+||Status||Pending review||
 ${rows}`;
+  }
+
+  function setTab(tab) {
+    activeTab = tab;
+    tabPreviewBtn.classList.toggle('active', tab === 'preview');
+    tabMarkupBtn.classList.toggle('active', tab === 'markup');
+    previewTabEl.style.display = tab === 'preview' ? '' : 'none';
+    markupTabEl.style.display = tab === 'markup' ? '' : 'none';
+  }
+
+  function update(resetView) {
+    const impact = impactEl.value;
+    const complexity = complexityEl.value;
+    const impactValue = mapValue[impact];
+    const complexityValue = mapValue[complexity];
+    const { impactWeight, complexityWeight } = readWeights();
+
+    const rawScore = impactWeight * impactValue + complexityWeight * complexityValue;
+    const rounded = Math.min(5, Math.max(1, Math.ceil(rawScore)));
+    computedLevel = reverseMap[rounded];
+    if (resetView || !viewedLevel) viewedLevel = computedLevel;
+
+    resultPill.className = `pill ${colorClass[computedLevel]}`;
+    resultPill.style.background = `var(--${colorClass[computedLevel]})`;
+    resultPill.textContent = `${computedLevel} — ${levelMeta[computedLevel].subtitle}`;
+    resultMeta.textContent = `Impact ${impact} · Complexity ${complexity}`;
+    formulaDetails.textContent = `${impactWeight.toFixed(2)}×${impactValue} + ${complexityWeight.toFixed(2)}×${complexityValue} = ${rawScore.toFixed(2)} → CEIL → ${computedLevel}`;
+
+    renderLevelStrip();
+    renderDetail();
+    renderPreview();
+    renderMarkup();
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      markupOutput.select();
+      document.execCommand('copy');
     }
+  }
 
-    function update() {
-      const impact = impactEl.value;
-      const complexity = complexityEl.value;
-      const impactValue = mapValue[impact];
-      const complexityValue = mapValue[complexity];
-      const { impactWeight, complexityWeight } = readWeights();
-
-      const rawScore = impactWeight * impactValue + complexityWeight * complexityValue;
-      const rounded = Math.min(5, Math.max(1, Math.ceil(rawScore)));
-      const qaLevel = reverseMap[rounded];
-      const levelTitle = levelCardsData[qaLevel].subtitle;
-
-      renderCards(qaLevel);
-
-      resultPill.className = `pill ${colorClass[qaLevel]}`;
-      resultPill.textContent = levelTitle;
-      resultMeta.textContent = `Impact = ${impact}, Complexity = ${complexity}, Impact Analysis QA = ${qaLevel}`;
-      formulaDetails.textContent = `Score = ${impactWeight.toFixed(2)} × ${impactValue} + ${complexityWeight.toFixed(2)} × ${complexityValue} = ${rawScore.toFixed(2)} → CEIL = ${rounded} → ${qaLevel}`;
-
-      jiraOutput.value = buildChecklist(qaLevel);
-    }
-
-    async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch {
-        jiraOutput.select();
-        document.execCommand('copy');
-      }
-    }
-
-    [impactEl, complexityEl].forEach(el => el.addEventListener('change', update));
-    [impactWeightEl, complexityWeightEl].forEach(el => {
-      el.addEventListener('input', update);
-      el.addEventListener('change', normalizeWeightFields);
+  levelStrip.querySelectorAll('.seg').forEach(seg => {
+    seg.addEventListener('click', () => {
+      viewedLevel = seg.dataset.level;
+      renderLevelStrip();
+      renderDetail();
+      renderPreview();
+      renderMarkup();
     });
+  });
 
-    copyChecklistBtn.addEventListener('click', async () => {
-      await copyText(jiraOutput.value);
-      copyChecklistBtn.textContent = 'Скопировано';
-      setTimeout(() => copyChecklistBtn.textContent = 'Скопировать чек-лист', 1200);
-    });
+  tabPreviewBtn.addEventListener('click', () => setTab('preview'));
+  tabMarkupBtn.addEventListener('click', () => setTab('markup'));
 
-    update();
-  </script>
+  [impactEl, complexityEl].forEach(el => el.addEventListener('change', () => update(true)));
+  componentEl.addEventListener('change', () => update(false));
+  [impactWeightEl, complexityWeightEl].forEach(el => {
+    el.addEventListener('input', () => update(false));
+    el.addEventListener('change', normalizeWeightFields);
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    await copyText(markupOutput.value);
+    copyBtn.textContent = 'Copied';
+    setTimeout(() => copyBtn.textContent = 'Copy for Jira', 1200);
+  });
+
+  setTab('preview');
+  update(true);
+</script>
 </body>
 </html>

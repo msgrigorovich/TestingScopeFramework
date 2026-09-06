@@ -16,8 +16,8 @@ Imagine two identical parallel universes with one exception: the QA engineer ass
 
 Identical input — same change request:
 
-- Universe A — QA A — Personal interpretation — Scope A
-- Universe B — QA B — Personal interpretation — Scope B
+- Universe A — QA_A — Personal interpretation — Scope A
+- Universe B — QA_B — Personal interpretation — Scope B
 
 Experience and individual interpretation can produce two valid-looking but materially different test scopes.
 
@@ -39,11 +39,11 @@ This framework builds that decision around three parameters:
 |---|---|---|
 | 01 | **Testing depth** | How thoroughly should the changed behavior itself be examined? |
 | 02 | **Testing breadth** | How far should regression expand across connected systems? |
-| 03 · expert layer | **Distrust in the logic** | Where does an experienced QA engineer believe the calculated minimum is insufficient? |
+| 03 | **Distrust in the logic** | Where does an experienced QA engineer believe the calculated minimum is insufficient? |
 
 Depth defines vertical coverage. It determines how many rules, states, boundaries, combinations and failure paths must be investigated inside the changed functionality.
 
-Distrust is the space for individuality and QA expertise. It is always applied on top of the depth and breadth calculation—and it remains visible, explainable and open to discussion.
+Distrust is the space for individuality and QA expertise. It is always applied on top of the depth and breadth calculation — and it remains visible, explainable and open to discussion.
 
 Full product → Connected systems → Feature boundaries → Changed behavior.
 
@@ -100,7 +100,7 @@ Framework распространяется на ветки, соответств
 6. Финализация QA-процесса при необходимости (продвижение по Bug Life Cycle)
 
 > [!IMPORTANT]
-> Шаг 4 — критичный: от корректности выставленных значений зависит, насколько адекватным окажется весь последующий объём работы. Валидация Impact/Complexity требует чётких критериев их выставления; критерии выставления Complexity Dev пока не задокументированы — это открытая задача.
+> Шаг 4 — критичный: от корректности выставленных значений зависит, насколько адекватным окажется весь последующий объём работы. Валидация Impact/Complexity требует чётких критериев их выставления.
 
 ## Матрица тестирования
 
@@ -146,6 +146,8 @@ impact_analysis_qa = 0.6 * 1 + 0.4 * 2 = 1.4 → CEIL → 2 = S
 > Если в задаче не выставлен Complexity Dev, допускается упрощение `Impact Analysis QA = Impact Analysis`, но это не рекомендуется — увеличивает погрешность определения уровня. Любые невыставленные значения, важные для дальнейшей работы QA, должны быть донесены до автора задачи.
 
 ## Калькулятор
+
+[![Testing Scope Calculator preview](assets/calculator-preview.png)](calculator.html)
 
 [`calculator.html`](calculator.html) — самодостаточный HTML-инструмент (без сборки и зависимостей, открывается прямо в браузере), реализующий формулу выше:
 
