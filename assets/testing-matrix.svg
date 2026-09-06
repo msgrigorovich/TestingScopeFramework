@@ -1,77 +1,35 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" font-family="Segoe UI, Inter, Arial, sans-serif">
-  <rect x="0" y="0" width="720" height="400" fill="#f6f3ea"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1128 214" font-family="Montserrat, Segoe UI, Arial, sans-serif">
+  <rect width="1128" height="214" fill="#f7f5ee"/>
 
-  <!-- Corner cell: axis legend -->
-  <rect x="20" y="20" width="130" height="60" rx="3" fill="#ece6d5"/>
-  <line x1="20" y1="20" x2="150" y2="80" stroke="#cfc8b4" stroke-width="1"/>
-  <text x="140" y="34" text-anchor="end" font-size="10" font-weight="700" letter-spacing="0.5" fill="#4b4636">IMPACT</text>
-  <text x="30" y="72" text-anchor="start" font-size="10" font-weight="700" letter-spacing="0.5" fill="#4b4636">COMPLEXITY</text>
+  <g stroke="#f7f5ee" stroke-width="3">
+    <rect x="1.5" y="1.5" width="166" height="45" rx="4" fill="#eeece4"/>
+    <rect x="167.5" y="1.5" width="191" height="45" rx="4" fill="#eeece4"/>
+    <rect x="358.5" y="1.5" width="191" height="45" rx="4" fill="#eeece4"/>
+    <rect x="549.5" y="1.5" width="191" height="45" rx="4" fill="#eeece4"/>
+    <rect x="740.5" y="1.5" width="191" height="45" rx="4" fill="#eeece4"/>
+    <rect x="931.5" y="1.5" width="195" height="45" rx="4" fill="#eeece4"/>
 
-  <!-- Column headers: Impact Analysis (XS..XL) -->
-  <g font-size="16" font-weight="700" fill="#4b4636" text-anchor="middle">
-    <rect x="150" y="20" width="110" height="60" rx="3" fill="#ece6d5"/>
-    <text x="205" y="55">XS</text>
-    <rect x="260" y="20" width="110" height="60" rx="3" fill="#ece6d5"/>
-    <text x="315" y="55">S</text>
-    <rect x="370" y="20" width="110" height="60" rx="3" fill="#ece6d5"/>
-    <text x="425" y="55">M</text>
-    <rect x="480" y="20" width="110" height="60" rx="3" fill="#ece6d5"/>
-    <text x="535" y="55">L</text>
-    <rect x="590" y="20" width="110" height="60" rx="3" fill="#ece6d5"/>
-    <text x="645" y="55">XL</text>
+    <rect x="1.5" y="46.5" width="166" height="33" rx="4" fill="#eeeee6"/>
+    <rect x="1.5" y="79.5" width="166" height="33" rx="4" fill="#eeeee6"/>
+    <rect x="1.5" y="112.5" width="166" height="33" rx="4" fill="#eeeee6"/>
+    <rect x="1.5" y="145.5" width="166" height="33" rx="4" fill="#eeeee6"/>
+    <rect x="1.5" y="178.5" width="166" height="34" rx="4" fill="#eeeee6"/>
+
+    <rect x="167.5" y="46.5" width="191" height="33" rx="4" fill="#96c0a0"/><rect x="358.5" y="46.5" width="191" height="33" rx="4" fill="#afd0a6"/><rect x="549.5" y="46.5" width="191" height="33" rx="4" fill="#c9d8a4"/><rect x="740.5" y="46.5" width="191" height="33" rx="4" fill="#e0d68f"/><rect x="931.5" y="46.5" width="195" height="33" rx="4" fill="#e5bd7b"/>
+    <rect x="167.5" y="79.5" width="191" height="33" rx="4" fill="#aad0a5"/><rect x="358.5" y="79.5" width="191" height="33" rx="4" fill="#bfd49f"/><rect x="549.5" y="79.5" width="191" height="33" rx="4" fill="#ddd68f"/><rect x="740.5" y="79.5" width="191" height="33" rx="4" fill="#e5c47f"/><rect x="931.5" y="79.5" width="195" height="33" rx="4" fill="#dda66c"/>
+    <rect x="167.5" y="112.5" width="191" height="33" rx="4" fill="#b7d3a3"/><rect x="358.5" y="112.5" width="191" height="33" rx="4" fill="#ced79a"/><rect x="549.5" y="112.5" width="191" height="33" rx="4" fill="#e2d28a"/><rect x="740.5" y="112.5" width="191" height="33" rx="4" fill="#dfb675"/><rect x="931.5" y="112.5" width="195" height="33" rx="4" fill="#d99767"/>
+    <rect x="167.5" y="145.5" width="191" height="33" rx="4" fill="#c7d79e"/><rect x="358.5" y="145.5" width="191" height="33" rx="4" fill="#ddd48d"/><rect x="549.5" y="145.5" width="191" height="33" rx="4" fill="#e5c27c"/><rect x="740.5" y="145.5" width="191" height="33" rx="4" fill="#dda46a"/><rect x="931.5" y="145.5" width="195" height="33" rx="4" fill="#d08567"/>
+    <rect x="167.5" y="178.5" width="191" height="34" rx="4" fill="#d2d99a"/><rect x="358.5" y="178.5" width="191" height="34" rx="4" fill="#e2cf88"/><rect x="549.5" y="178.5" width="191" height="34" rx="4" fill="#dfb474"/><rect x="740.5" y="178.5" width="191" height="34" rx="4" fill="#d99b68"/><rect x="931.5" y="178.5" width="195" height="34" rx="4" fill="#cc8065"/>
   </g>
 
-  <!-- Row headers: Complexity Dev (XS..XL) -->
-  <g font-size="13" font-weight="700" fill="#4b4636" text-anchor="middle">
-    <rect x="20" y="80" width="130" height="60" rx="3" fill="#ece6d5"/>
-    <text x="85" y="114">XS</text>
-    <rect x="20" y="140" width="130" height="60" rx="3" fill="#ece6d5"/>
-    <text x="85" y="174">S</text>
-    <rect x="20" y="200" width="130" height="60" rx="3" fill="#ece6d5"/>
-    <text x="85" y="234">M</text>
-    <rect x="20" y="260" width="130" height="60" rx="3" fill="#ece6d5"/>
-    <text x="85" y="294">L</text>
-    <rect x="20" y="320" width="130" height="60" rx="3" fill="#ece6d5"/>
-    <text x="85" y="354">XL</text>
+  <line x1="5" y1="7" x2="164" y2="42" stroke="#b9b8b0" stroke-width="1"/>
+  <g fill="#292923" font-size="10" font-weight="700"><text x="159" y="17" text-anchor="end">Impact</text><text x="7" y="39">Complexity</text></g>
+  <g fill="#292923" font-size="12" font-weight="700" text-anchor="middle">
+    <text x="263" y="29">XS</text><text x="454" y="29">S</text><text x="645" y="29">M</text><text x="836" y="29">L</text><text x="1029" y="29">XL</text>
+    <text x="84" y="68">XS</text><text x="84" y="101">S</text><text x="84" y="134">M</text><text x="84" y="167">L</text><text x="84" y="201">XL</text>
   </g>
-
-  <!-- Data cells: Impact Analysis QA result. Fill is a continuous
-       green -> tan -> terracotta gradient over the raw (pre-CEIL) score,
-       so shading tracks the formula smoothly, not just the rounded letter. -->
-  <g font-size="16" font-weight="700" text-anchor="middle">
-    <!-- Complexity = XS -->
-    <rect x="150" y="80" width="110" height="60" rx="3" fill="#5F9E74"/><text x="205" y="114" fill="#3a332b">XS</text>
-    <rect x="260" y="80" width="110" height="60" rx="3" fill="#8BB884"/><text x="315" y="114" fill="#3a332b">S</text>
-    <rect x="370" y="80" width="110" height="60" rx="3" fill="#B5CC91"/><text x="425" y="114" fill="#3a332b">M</text>
-    <rect x="480" y="80" width="110" height="60" rx="3" fill="#DBD698"/><text x="535" y="114" fill="#3a332b">M</text>
-    <rect x="590" y="80" width="110" height="60" rx="3" fill="#E5C384"/><text x="645" y="114" fill="#3a332b">L</text>
-
-    <!-- Complexity = S -->
-    <rect x="150" y="140" width="110" height="60" rx="3" fill="#7CAF7F"/><text x="205" y="174" fill="#3a332b">S</text>
-    <rect x="260" y="140" width="110" height="60" rx="3" fill="#A8C98F"/><text x="315" y="174" fill="#3a332b">S</text>
-    <rect x="370" y="140" width="110" height="60" rx="3" fill="#CED396"/><text x="425" y="174" fill="#3a332b">M</text>
-    <rect x="480" y="140" width="110" height="60" rx="3" fill="#E6CE8F"/><text x="535" y="174" fill="#3a332b">L</text>
-    <rect x="590" y="140" width="110" height="60" rx="3" fill="#E2AD6D"/><text x="645" y="174" fill="#3a332b">L</text>
-
-    <!-- Complexity = M -->
-    <rect x="150" y="200" width="110" height="60" rx="3" fill="#99C08A"/><text x="205" y="234" fill="#3a332b">S</text>
-    <rect x="260" y="200" width="110" height="60" rx="3" fill="#C2CF93"/><text x="315" y="234" fill="#3a332b">M</text>
-    <rect x="370" y="200" width="110" height="60" rx="3" fill="#E8D99A"/><text x="425" y="234" fill="#3a332b">M</text>
-    <rect x="480" y="200" width="110" height="60" rx="3" fill="#E3B878"/><text x="535" y="234" fill="#3a332b">L</text>
-    <rect x="590" y="200" width="110" height="60" rx="3" fill="#DA9560"/><text x="645" y="234" fill="#ffffff">XL</text>
-
-    <!-- Complexity = L -->
-    <rect x="150" y="260" width="110" height="60" rx="3" fill="#B5CC91"/><text x="205" y="294" fill="#3a332b">M</text>
-    <rect x="260" y="260" width="110" height="60" rx="3" fill="#DBD698"/><text x="315" y="294" fill="#3a332b">M</text>
-    <rect x="370" y="260" width="110" height="60" rx="3" fill="#E5C384"/><text x="425" y="294" fill="#3a332b">L</text>
-    <rect x="480" y="260" width="110" height="60" rx="3" fill="#E0A262"/><text x="535" y="294" fill="#3a332b">L</text>
-    <rect x="590" y="260" width="110" height="60" rx="3" fill="#CD7A5B"/><text x="645" y="294" fill="#ffffff">XL</text>
-
-    <!-- Complexity = XL -->
-    <rect x="150" y="320" width="110" height="60" rx="3" fill="#CED396"/><text x="205" y="354" fill="#3a332b">M</text>
-    <rect x="260" y="320" width="110" height="60" rx="3" fill="#E6CE8F"/><text x="315" y="354" fill="#3a332b">L</text>
-    <rect x="370" y="320" width="110" height="60" rx="3" fill="#E2AD6D"/><text x="425" y="354" fill="#3a332b">L</text>
-    <rect x="480" y="320" width="110" height="60" rx="3" fill="#D4875D"/><text x="535" y="354" fill="#ffffff">XL</text>
-    <rect x="590" y="320" width="110" height="60" rx="3" fill="#C15F56"/><text x="645" y="354" fill="#ffffff">XL</text>
+  <g font-size="12" font-weight="700" text-anchor="middle">
+    <g fill="#22231f"><text x="263" y="68">XS</text><text x="454" y="68">S</text><text x="645" y="68">M</text><text x="836" y="68">M</text><text x="1029" y="68">L</text><text x="263" y="101">S</text><text x="454" y="101">S</text><text x="645" y="101">M</text><text x="836" y="101">L</text><text x="1029" y="101">L</text><text x="263" y="134">S</text><text x="454" y="134">M</text><text x="645" y="134">M</text><text x="836" y="134">L</text><text x="263" y="167">M</text><text x="454" y="167">M</text><text x="645" y="167">L</text><text x="836" y="167">L</text><text x="263" y="201">M</text><text x="454" y="201">L</text><text x="645" y="201">L</text></g>
+    <g fill="#fff"><text x="1029" y="134">XL</text><text x="1029" y="167">XL</text><text x="836" y="201">XL</text><text x="1029" y="201">XL</text></g>
   </g>
 </svg>
