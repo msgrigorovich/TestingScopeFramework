@@ -32,20 +32,22 @@ This document doesn't replace a QA engineer's analytical thinking — it sets a 
 
 Imagine two identical parallel universes with one exception: the QA engineer assigned to the task. How can we shape the QA process for an AAA system with a complex Core Gameplay structure so that we can expect the same result in both universes?
 
-**My experience in AAA suggests that the individual specialist has too much influence on the outcome. So what can we do about it?**
+> [!NOTE]
+> My experience in AAA suggests that the individual specialist has too much influence on the outcome. So what can we do about it?
 
 **Same task. Different reasoning.**
 
 Identical input — same change request:
 
-- Universe A — QA_A — Personal interpretation — Scope A
-- Universe B — QA_B — Personal interpretation — Scope B
+- Universe A — QA_A — Personal interpretation — Scope_A
+- Universe B — QA_B — Personal interpretation — Scope_B
 
 Experience and individual interpretation can produce two valid-looking but materially different test scopes.
 
 Individuality is valuable — until it leads to a poor outcome. Individuality can create frameworks like this. It can also create the reasons such frameworks are needed.
 
-When we talk about quality, we mean bringing the expected and actual results into alignment. We cannot accept a situation in which we do not know what to expect.
+> [!IMPORTANT]
+> When we talk about quality, we mean bringing the expected and actual results into alignment. We cannot accept a situation in which we do not know what to expect.
 
 ## A universal AAA checklist does not exist.
 
